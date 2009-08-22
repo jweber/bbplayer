@@ -6,16 +6,16 @@ using System.Text;
 
 namespace bbplayer
 {
-    class SolutionFinder
+    class NaiveFirstSolutionFinder : ISolutionFinder
     {
         private Board _board;
 
-        public SolutionFinder( Board board )
+        public NaiveFirstSolutionFinder( Board board )
         {
             _board = board;
         }
 
-        public Solution FindSolution()
+        public virtual Solution FindSolution()
         {
             for ( int y = 7; y >= 0; y-- )
             {
@@ -56,7 +56,7 @@ namespace bbplayer
             return null;
         }
 
-        bool MoveRightSolves( BoardPosition position )
+        protected virtual bool MoveRightSolves( BoardPosition position )
         {
             var firstRightOf = _board.RightOf( position );
             
@@ -91,7 +91,7 @@ namespace bbplayer
             return alignsRight || alignsTop || alignsBottom || alignsTopBottom;
         }
 
-        bool MoveLeftSolves( BoardPosition position )
+        protected virtual bool MoveLeftSolves( BoardPosition position )
         {
             var firstLeftOf = _board.LeftOf( position );
             
@@ -126,7 +126,7 @@ namespace bbplayer
             return alignsLeft || alignsTop || alignsBottom || alignsTopBottom;
         }
 
-        bool MoveUpSolves( BoardPosition position )
+        protected virtual bool MoveUpSolves( BoardPosition position )
         {
             var firstTopOf = _board.TopOf( position );
 
@@ -161,7 +161,7 @@ namespace bbplayer
             return alignsTop || alignsLeft || alignsRight || alignsLeftRight;
         }
 
-        bool MoveDownSolves( BoardPosition position )
+        protected virtual bool MoveDownSolves( BoardPosition position )
         {
             var firstBottomOf = _board.BottomOf( position );
 

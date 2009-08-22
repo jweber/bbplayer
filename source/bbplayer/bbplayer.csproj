@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.dotTrace.Api, Version=3.1.355.1000, Culture=neutral, PublicKeyToken=a69a3c730d060360">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\JetBrains\dotTrace 3.1\JetBrains.dotTrace.Api.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -71,6 +75,8 @@
   <ItemGroup>
     <Compile Include="Board.cs" />
     <Compile Include="BoardPosition.cs" />
+    <Compile Include="ISolutionFinder.cs" />
+    <Compile Include="NaiveBestSolutionFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -86,7 +92,7 @@
     </Compile>
     <Compile Include="BoardPiece.cs" />
     <Compile Include="Solution.cs" />
-    <Compile Include="SolutionFinder.cs" />
+    <Compile Include="NaiveFirstSolutionFinder.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

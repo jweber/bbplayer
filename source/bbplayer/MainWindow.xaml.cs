@@ -128,74 +128,96 @@ namespace bbplayer
 
             if ( e.Key == Key.D3 )
             {
-                for ( int y = 0; y < 8; y++ )
-                {
-                    for ( int x = 0; x < 8; x++ )
-                    {
-                        int setX = _boardCalibration.X + (40*x);
-                        int setY = _boardCalibration.Y + (40*y);
+                //JetBrains.dotTrace.Api.CPUProfiler.Start();
 
-                        SetCursorPos( setX, setY );
+                RefreshBoard();
 
-                        var color = GetPixelColorAt( setX, setY );
-                        
-                        var boardPiece = BoardPiece.FindMatch( color );
-
-                        _board[y, x].Facade.Fill = new SolidColorBrush( color );
-                        _board[y, x].Facade.ToolTip = boardPiece.Name;
-                        
-                        _board[y, x].SetPiece( boardPiece, new Point( setX, setY ), y, x );
-                    }
-                }
+                //JetBrains.dotTrace.Api.CPUProfiler.StopAndSaveSnapShot();
             }
 
             if ( e.Key == Key.D4 )
             {
-                var sf = new SolutionFinder( _board );
-                var sol = sf.FindSolution();
+                FindAndApplySolution();
+            }
 
-                Point currentPos;
-                GetCursorPos( out currentPos );
-
-                if ( sol != null )
-                {
-                    solution.Content = string.Format( "Solution: x:{0}, y:{1} to x{2}, y:{3}",
-                                                      sol.ArrayPosition1.X,
-                                                      sol.ArrayPosition1.Y,
-                                                      sol.ArrayPosition2.X,
-                                                      sol.ArrayPosition2.Y );
-
-                    SetCursorPos( _boardCalibration.X + ( sol.ArrayPosition1.X * 40 ),
-                                  _boardCalibration.Y + ( sol.ArrayPosition1.Y * 40 ) );
-
-                    mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
-                    Thread.Sleep( 50 );
-                    mouse_event( (uint)MouseEventFlags.LEFTUP, 0, 0, 0, UIntPtr.Zero );
-
-                    Thread.Sleep( 200 );
-
-                    SetCursorPos( _boardCalibration.X + ( sol.ArrayPosition2.X * 40 ),
-                                  _boardCalibration.Y + ( sol.ArrayPosition2.Y * 40 ) );
-
-                    mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
-                    Thread.Sleep( 50 );
-                    mouse_event( (uint)MouseEventFlags.LEFTUP, 0, 0, 0, UIntPtr.Zero );
-
-
-                    SetCursorPos( _mainWindow.X, _mainWindow.Y );
-                    mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
-                    Thread.Sleep( 50 );
-                    mouse_event( (uint)MouseEventFlags.LEFTUP, 0, 0, 0, UIntPtr.Zero );
-                    
-                }
-                else
-                {
-                    solution.Content = "No solution found";
-                }
+            if ( e.Key == Key.D5 )
+            {
+                RefreshBoard();
+                Thread.Sleep( 100 );
+                FindAndApplySolution();
             }
            
 
             base.OnKeyDown(e);
+        }
+
+        private void FindAndApplySolution()
+        {
+            var sf = new NaiveBestSolutionFinder( _board );
+            var sol = sf.FindSolution();
+
+            Point currentPos;
+            GetCursorPos( out currentPos );
+
+            if ( sol != null )
+            {
+                solution.Content = string.Format( "Solution: (weight:{4}) x:{0}, y:{1} to x{2}, y:{3}",
+                                                  sol.ArrayPosition1.X,
+                                                  sol.ArrayPosition1.Y,
+                                                  sol.ArrayPosition2.X,
+                                                  sol.ArrayPosition2.Y,
+                                                  sol.Weight );
+
+                SetCursorPos( _boardCalibration.X + ( sol.ArrayPosition1.X * 40 ),
+                              _boardCalibration.Y + ( sol.ArrayPosition1.Y * 40 ) );
+
+                mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
+                Thread.Sleep( 50 );
+                mouse_event( (uint)MouseEventFlags.LEFTUP, 0, 0, 0, UIntPtr.Zero );
+
+                Thread.Sleep( 200 );
+
+                SetCursorPos( _boardCalibration.X + ( sol.ArrayPosition2.X * 40 ),
+                              _boardCalibration.Y + ( sol.ArrayPosition2.Y * 40 ) );
+
+                mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
+                Thread.Sleep( 50 );
+                mouse_event( (uint)MouseEventFlags.LEFTUP, 0, 0, 0, UIntPtr.Zero );
+
+
+                SetCursorPos( _mainWindow.X, _mainWindow.Y );
+                mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
+                Thread.Sleep( 50 );
+                mouse_event( (uint)MouseEventFlags.LEFTUP, 0, 0, 0, UIntPtr.Zero );
+                    
+            }
+            else
+            {
+                solution.Content = "No solution found";
+            }
+        }
+
+        private void RefreshBoard()
+        {
+            for ( int y = 0; y < 8; y++ )
+            {
+                for ( int x = 0; x < 8; x++ )
+                {
+                    int setX = _boardCalibration.X + (40*x);
+                    int setY = _boardCalibration.Y + (40*y);
+
+                    //SetCursorPos( setX, setY );
+
+                    var color = GetPixelColorAt( setX, setY );
+                        
+                    var boardPiece = BoardPiece.FindMatch( color );
+
+                    _board[y, x].Facade.Fill = new SolidColorBrush( color );
+                    _board[y, x].Facade.ToolTip = boardPiece.Name;
+                        
+                    _board[y, x].SetPiece( boardPiece, new Point( setX, setY ), y, x );
+                }
+            }
         }
 
         private Color GetPixelColorAt( int x, int y )
