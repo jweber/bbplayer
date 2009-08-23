@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Brushes=System.Windows.Media.Brushes;
 using Color=System.Windows.Media.Color;
+using KeyEventArgs=System.Windows.Input.KeyEventArgs;
 using Point=System.Drawing.Point;
 
 namespace bbplayer
@@ -32,7 +37,9 @@ namespace bbplayer
 
             _board = new Board();
             InitializeBoard();
+
         }
+
 
         private void InitializeBoard()
         {
@@ -143,10 +150,17 @@ namespace bbplayer
             if ( e.Key == Key.D5 )
             {
                 RefreshBoard();
+
+                if ( _unknownCount > 0 )
+                {
+                    RefreshBoard();
+                    Thread.Sleep( 100 );
+                }
+
                 Thread.Sleep( 100 );
                 FindAndApplySolution();
             }
-           
+          
 
             base.OnKeyDown(e);
         }
@@ -175,7 +189,7 @@ namespace bbplayer
                 Thread.Sleep( 50 );
                 mouse_event( (uint)MouseEventFlags.LEFTUP, 0, 0, 0, UIntPtr.Zero );
 
-                Thread.Sleep( 200 );
+                Thread.Sleep( 150 );
 
                 SetCursorPos( _boardCalibration.X + ( sol.ArrayPosition2.X * 40 ),
                               _boardCalibration.Y + ( sol.ArrayPosition2.Y * 40 ) );
@@ -197,8 +211,13 @@ namespace bbplayer
             }
         }
 
+        private int _unknownCount;
+        private int _refreshCount;
+
         private void RefreshBoard()
         {
+            _unknownCount = 0;
+
             for ( int y = 0; y < 8; y++ )
             {
                 for ( int x = 0; x < 8; x++ )
@@ -214,7 +233,18 @@ namespace bbplayer
 
                     _board[y, x].Facade.Fill = new SolidColorBrush( color );
                     _board[y, x].Facade.ToolTip = boardPiece.Name;
-                        
+                    if ( boardPiece == BoardPiece.Unknown )
+                    {
+                        _unknownCount++;
+                        _board[y, x].Facade.Stroke = Brushes.Red;
+                        _board[y, x].Facade.StrokeThickness = 3;
+                    }
+                    else
+                    {
+                        _board[y, x].Facade.Stroke = Brushes.Black;
+                        _board[y, x].Facade.StrokeThickness = 1;                        
+                    }
+                    
                     _board[y, x].SetPiece( boardPiece, new Point( setX, setY ), y, x );
                 }
             }
@@ -288,78 +318,10 @@ namespace bbplayer
             RIGHTUP = 0x00000010
         }
 
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern uint SendInput( uint nInputs, INPUT[] pInputs, int cbSize );
-
-        const int INPUT_MOUSE = 0;
-        const int INPUT_KEYBOARD = 1;
-        const int INPUT_HARDWARE = 2;
-        const uint KEYEVENTF_EXTENDEDKEY = 0x0001;
-        const uint KEYEVENTF_KEYUP = 0x0002;
-        const uint KEYEVENTF_UNICODE = 0x0004;
-        const uint KEYEVENTF_SCANCODE = 0x0008;
-        const uint XBUTTON1 = 0x0001;
-        const uint XBUTTON2 = 0x0002;
-        const uint MOUSEEVENTF_MOVE = 0x0001;
-        const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
-        const uint MOUSEEVENTF_LEFTUP = 0x0004;
-        const uint MOUSEEVENTF_RIGHTDOWN = 0x0008;
-        const uint MOUSEEVENTF_RIGHTUP = 0x0010;
-        const uint MOUSEEVENTF_MIDDLEDOWN = 0x0020;
-        const uint MOUSEEVENTF_MIDDLEUP = 0x0040;
-        const uint MOUSEEVENTF_XDOWN = 0x0080;
-        const uint MOUSEEVENTF_XUP = 0x0100;
-        const uint MOUSEEVENTF_WHEEL = 0x0800;
-        const uint MOUSEEVENTF_VIRTUALDESK = 0x4000;
-        const uint MOUSEEVENTF_ABSOLUTE = 0x8000;
-
-        private struct MOUSEINPUT
-        {
-            public int dx;
-            public int dy;
-            public uint mouseData;
-            public uint dwFlags;
-            public uint time;
-            public IntPtr dwExtraInfo;
-        }
-
-        private struct KEYBDINPUT
-        {
-            public ushort wVk;
-            public ushort wScan;
-            public uint dwFlags;
-            public uint time;
-            public IntPtr dwExtraInfo;
-        }
-
-        private struct HARDWAREINPUT
-        {
-            public uint uMsg;
-            public ushort wParamL;
-            public ushort wParamH;
-        }
-
-        [StructLayout( LayoutKind.Explicit )]
-        private struct MOUSEKEYBDHARDWAREINPUT
-        {
-            [FieldOffset( 0 )]
-            public MOUSEINPUT mi;
-
-            [FieldOffset( 0 )]
-            public KEYBDINPUT ki;
-
-            [FieldOffset( 0 )]
-            public HARDWAREINPUT hi;
-        }
-
-        private struct INPUT
-        {
-            public int type;
-            public MOUSEKEYBDHARDWAREINPUT mkhi;
-        }
-
         [DllImport( "user32.dll" )]
-        private static extern IntPtr GetMessageExtraInfo();
+        [return: MarshalAs( UnmanagedType.Bool )]
+        private static extern bool RegisterHotKey( IntPtr hWnd, int id, uint fsModifiers, uint vk );
 
     }
+
 }

@@ -6,7 +6,7 @@ namespace bbplayer
     {
         enum RootBoardPiece
         {
-            None,
+            Unknown,
             RedSquare,
             OrangeDecahedron,
             PurpleTriangle,
@@ -41,47 +41,73 @@ namespace bbplayer
             if ( hue == 0 && saturation > 0 && saturation < 1 )
                 return RedSquare;
 
-            if ( hue >= 340 && hue < 350 && saturation <= 1 )
+            if ( hue == 0 && saturation > 0 && saturation <= 1 && brightness > .85 )
+                return RedSquare_Power;
+
+            if ( hue >= 340 && hue < 360 && saturation <= 1 )
                 return RedSquare_Multiplier;
 
-            if ( hue == 0 && saturation == 0 && brightness > 0.85 && brightness < 1 )
+            if ( hue == 0 && saturation == 0 && brightness > 0.85 && brightness <= .985 )
                 return GrayRock;
+
+            if ( hue == 0 && saturation == 0 && brightness > 0.985 )
+                return GrayRock_Power;
 
             if ( hue == 0 && saturation == 0 && brightness <= 0.85 )
                 return GrayRock_Multiplier;
 
-            if ( hue > 26 && hue < 40 )
+            if ( hue > 22 && hue < 40 && brightness < 0.9 )
                 return OrangeDecahedron;
 
-            if ( hue == 300 )
+            if ( hue > 22 && hue < 40 && brightness > 0.9 )
+                return OrangeDecahedron_Power;
+
+            if ( hue == 300 && brightness <= 0.8 )
                 return PurpleTriangle;
+
+            if ( hue == 300 && brightness > 0.8 )
+                return PurpleTriangle_Power;
 
             if ( hue > 270 && hue < 300 )
                 return PurpleTriangle_Multiplier;
 
-            if ( hue == 120 )
+            if ( hue == 120 && brightness < .7 )
                 return GreenSphere;
 
-            if ( hue > 120 && hue < 128 )
+            if ( hue == 120 && brightness >= 0.9 )
+                return GreenSphere_Power;
+
+            if ( hue > 120 && hue < 128 && brightness >= .7 && brightness < .9 )
                 return GreenSphere_Multiplier;
 
-            if ( hue > 200 && hue < 215 && brightness >= .6 )
+            if ( hue > 195 && hue < 215 && brightness >= .55 && brightness < 0.9 )
                 return BlueDiamond;
 
-            if ( hue > 200 && hue < 240 && brightness < .6 )
+            if ( hue > 195 && hue < 215 && brightness >= 0.9 )
+                return BlueDiamond_Power;
+
+            if ( hue > 195 && hue < 255 && brightness < .55 )
                 return BlueDiamond_Multiplier;
 
-            if ( hue > 58 && hue < 61 && saturation < .7 )
+            if ( hue > 195 && hue < 255 && saturation == 1 && brightness < .6 )
+                return BlueDiamond_Multiplier;
+
+            if ( hue > 55 && hue < 61 && saturation < .7 && brightness < .9 )
                 return YellowSquare;
 
-            if ( hue > 58 && hue < 61 && saturation >= .7 )
+            if ( hue > 55 && hue < 61 && saturation < .7 && brightness >= .9 )
+                return YellowSquare_Power;
+
+            if ( hue > 55 && hue < 61 && saturation >= .7 )
                 return YellowSquare_Multiplier;
 
             if ( hue == 0 && saturation == 0 && brightness == 1 )
                 return HyperCube;
 
-            return new BoardPiece( RootBoardPiece.None, "Unknown", 0, Color.FromArgb( 255, 255, 255, 255 ) );            
+            return Unknown;
         }
+
+        public static BoardPiece Unknown = new BoardPiece( RootBoardPiece.Unknown, "Unknown", 0, System.Windows.Media.Color.FromArgb( 255, 0, 0, 0 ) );
 
         public static BoardPiece RedSquare = new BoardPiece( RootBoardPiece.RedSquare, "Red Square", 1, Color.FromArgb( 255, 254, 100, 100 ) );
         public static BoardPiece OrangeDecahedron = new BoardPiece( RootBoardPiece.OrangeDecahedron, "Orange Decahedron", 1, Color.FromArgb( 255, 241, 125, 36 ) );
@@ -90,6 +116,14 @@ namespace bbplayer
         public static BoardPiece BlueDiamond = new BoardPiece( RootBoardPiece.BlueDiamond, "Blue Diamond", 1, Color.FromArgb( 255, 15, 96, 203 ) );
         public static BoardPiece GrayRock = new BoardPiece( RootBoardPiece.GrayRock, "Gray Rock", 1, Color.FromArgb( 255, 251, 251, 251 ) );
         public static BoardPiece YellowSquare = new BoardPiece( RootBoardPiece.YellowSquare, "Yellow Square", 1, Color.FromArgb( 255, 209, 207, 54 ) );
+
+        public static BoardPiece RedSquare_Power = new BoardPiece( RootBoardPiece.RedSquare, "Red Square Power", 3, Color.FromArgb( 255, 254, 100, 100 ) );
+        public static BoardPiece OrangeDecahedron_Power = new BoardPiece( RootBoardPiece.OrangeDecahedron, "Orange Decahedron Power", 3, Color.FromArgb( 255, 241, 125, 36 ) );
+        public static BoardPiece PurpleTriangle_Power = new BoardPiece( RootBoardPiece.PurpleTriangle, "Purple Triangle Power", 3, Color.FromArgb( 255, 213, 28, 213 ) );
+        public static BoardPiece GreenSphere_Power = new BoardPiece( RootBoardPiece.GreenSphere, "Green Sphere Power", 3, Color.FromArgb( 255, 35, 207, 35 ) );
+        public static BoardPiece BlueDiamond_Power = new BoardPiece( RootBoardPiece.BlueDiamond, "Blue Diamond Power", 3, Color.FromArgb( 255, 15, 96, 203 ) );
+        public static BoardPiece GrayRock_Power = new BoardPiece( RootBoardPiece.GrayRock, "Gray Rock Power", 3, Color.FromArgb( 255, 251, 251, 251 ) );
+        public static BoardPiece YellowSquare_Power = new BoardPiece( RootBoardPiece.YellowSquare, "Yellow Square Power", 3, Color.FromArgb( 255, 209, 207, 54 ) );
 
         public static BoardPiece RedSquare_Multiplier = new BoardPiece( RootBoardPiece.RedSquare, "Red Square Multiplier", 5, Color.FromArgb( 255, 157, 2, 51 ) );
         public static BoardPiece PurpleTriangle_Multiplier = new BoardPiece( RootBoardPiece.PurpleTriangle, "Purple Triangle Multiplier", 5, System.Windows.Media.Color.FromArgb( 255, 108, 1, 156 ) );

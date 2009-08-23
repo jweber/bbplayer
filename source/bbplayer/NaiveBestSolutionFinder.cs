@@ -14,6 +14,9 @@ namespace bbplayer
             Solution2 = new Solution( initialPosition, moveToPosition );
             Solution3 = new Solution( initialPosition, moveToPosition );
             Solution4 = new Solution( initialPosition, moveToPosition );
+            Solution5 = new Solution( initialPosition, moveToPosition );
+            Solution6 = new Solution( initialPosition, moveToPosition );
+            Solution7 = new Solution( initialPosition, moveToPosition );
         }
 
         public Solution Solution1 { get; set; }
@@ -21,12 +24,19 @@ namespace bbplayer
         public Solution Solution3 { get; set; }
         public Solution Solution4 { get; set; }
 
+        public Solution Solution5 { get; set; }
+        public Solution Solution6 { get; set; }
+        public Solution Solution7 { get; set; }
+
         public void AddSolutions( IList<Solution> solutions )
         {
             solutions.Add( Solution1 );
             solutions.Add( Solution2 );
             solutions.Add( Solution3 );
             solutions.Add( Solution4 );
+            solutions.Add( Solution5 );
+            solutions.Add( Solution6 );
+            solutions.Add( Solution7 );
         }
     }
 
@@ -66,7 +76,9 @@ namespace bbplayer
         {
             var solutions = new SolutionPack( position.ArrayPosition,
                                               new Point( position.ArrayPosition.X + 1, position.ArrayPosition.Y ) );
-            
+
+            decimal hyperCubeWeight = ( position.Piece == BoardPiece.HyperCube ) ? position.Piece.Weight : 0;
+
             var firstRightOf = _board.RightOf( position );
             
             if ( firstRightOf == null || firstRightOf.Piece == position.Piece )
@@ -97,28 +109,59 @@ namespace bbplayer
                                    && ( position.Piece == firstNewTopOf.Piece )
                                    && ( position.Piece == firstNewBottomOf.Piece );
 
+            bool alignsTopBottom4a = ( firstNewTopOf != null && firstNewBottomOf != null && secondNewBottomOf != null )
+                                     && position.Piece == firstNewTopOf.Piece
+                                     && position.Piece == firstNewBottomOf.Piece
+                                     && position.Piece == secondNewBottomOf.Piece;
+
+            bool alignsTopBottom4b = ( firstNewTopOf != null && secondNewTopOf != null && firstNewBottomOf != null )
+                                     && position.Piece == firstNewTopOf.Piece && position.Piece == secondNewTopOf.Piece
+                                     && position.Piece == firstNewBottomOf.Piece;
+
+            bool alignsTopBottom5 = alignsTopBottom4a && ( secondNewTopOf != null )
+                                    && position.Piece == secondNewTopOf.Piece;
+
             if ( alignsRight )
             {
                 solutions.Solution1.Weight = position.Piece.Weight + secondRightOf.Piece.Weight
-                                             + thirdRightOf.Piece.Weight;
+                                             + thirdRightOf.Piece.Weight + hyperCubeWeight;
             }
 
             if ( alignsTop )
             {
                 solutions.Solution2.Weight = position.Piece.Weight + firstNewTopOf.Piece.Weight
-                                             + secondNewTopOf.Piece.Weight;
+                                             + secondNewTopOf.Piece.Weight + hyperCubeWeight;
             }
 
             if ( alignsBottom )
             {
                 solutions.Solution3.Weight = position.Piece.Weight + firstNewBottomOf.Piece.Weight
-                                             + secondNewBottomOf.Piece.Weight;
+                                             + secondNewBottomOf.Piece.Weight + hyperCubeWeight;
             }
 
             if ( alignsTopBottom )
             {
                 solutions.Solution4.Weight = position.Piece.Weight + firstNewTopOf.Piece.Weight
-                                             + firstNewBottomOf.Piece.Weight;
+                                             + firstNewBottomOf.Piece.Weight + hyperCubeWeight;
+            }
+
+            if ( alignsTopBottom4a )
+            {
+                solutions.Solution5.Weight = position.Piece.Weight + firstNewTopOf.Piece.Weight
+                                             + firstNewBottomOf.Piece.Weight + secondNewBottomOf.Piece.Weight + hyperCubeWeight;
+            }
+
+            if ( alignsTopBottom4b )
+            {
+                solutions.Solution6.Weight = position.Piece.Weight + firstNewTopOf.Piece.Weight
+                                             + secondNewTopOf.Piece.Weight + firstNewBottomOf.Piece.Weight + hyperCubeWeight;
+            }
+
+            if ( alignsTopBottom5 )
+            {
+                solutions.Solution7.Weight = position.Piece.Weight + firstNewTopOf.Piece.Weight
+                                             + secondNewTopOf.Piece.Weight + firstNewBottomOf.Piece.Weight
+                                             + secondNewBottomOf.Piece.Weight + hyperCubeWeight;
             }
 
             return solutions;
@@ -128,6 +171,8 @@ namespace bbplayer
         {
             var solutions = new SolutionPack( position.ArrayPosition,
                                               new Point( position.ArrayPosition.X - 1, position.ArrayPosition.Y ) );
+
+            decimal hyperCubeWeight = ( position.Piece == BoardPiece.HyperCube ) ? position.Piece.Weight : 0;
 
             var firstLeftOf = _board.LeftOf( position );
             
@@ -159,28 +204,59 @@ namespace bbplayer
                                    && ( position.Piece == firstNewTopOf.Piece )
                                    && ( position.Piece == firstNewBottomOf.Piece );
 
+            bool alignsTopBottom4a = ( firstNewTopOf != null && firstNewBottomOf != null && secondNewBottomOf != null )
+                                     && position.Piece == firstNewTopOf.Piece
+                                     && position.Piece == firstNewBottomOf.Piece
+                                     && position.Piece == secondNewBottomOf.Piece;
+
+            bool alignsTopBottom4b = ( firstNewTopOf != null && secondNewTopOf != null && firstNewBottomOf != null )
+                                     && position.Piece == firstNewTopOf.Piece && position.Piece == secondNewTopOf.Piece
+                                     && position.Piece == firstNewBottomOf.Piece;
+
+            bool alignsTopBottom5 = alignsTopBottom4a && ( secondNewTopOf != null )
+                                    && position.Piece == secondNewTopOf.Piece;
+
             if ( alignsLeft )
             {
                 solutions.Solution1.Weight = position.Piece.Weight + secondLeftOf.Piece.Weight
-                                             + thirdLeftOf.Piece.Weight;
+                                             + thirdLeftOf.Piece.Weight + hyperCubeWeight;
             }
 
             if ( alignsTop )
             {
                 solutions.Solution2.Weight = position.Piece.Weight + firstNewTopOf.Piece.Weight
-                                             + secondNewTopOf.Piece.Weight;
+                                             + secondNewTopOf.Piece.Weight + hyperCubeWeight;
             }
 
             if ( alignsBottom )
             {
                 solutions.Solution3.Weight = position.Piece.Weight + firstNewBottomOf.Piece.Weight
-                                             + secondNewBottomOf.Piece.Weight;
+                                             + secondNewBottomOf.Piece.Weight + hyperCubeWeight;
             }
 
             if ( alignsTopBottom )
             {
                 solutions.Solution4.Weight = position.Piece.Weight + firstNewTopOf.Piece.Weight
-                                             + firstNewBottomOf.Piece.Weight;
+                                             + firstNewBottomOf.Piece.Weight + hyperCubeWeight;
+            }
+
+            if ( alignsTopBottom4a )
+            {
+                solutions.Solution5.Weight = position.Piece.Weight + firstNewTopOf.Piece.Weight
+                                             + firstNewBottomOf.Piece.Weight + secondNewBottomOf.Piece.Weight + hyperCubeWeight;
+            }
+
+            if ( alignsTopBottom4b )
+            {
+                solutions.Solution6.Weight = position.Piece.Weight + firstNewTopOf.Piece.Weight
+                                             + secondNewTopOf.Piece.Weight + firstNewBottomOf.Piece.Weight + hyperCubeWeight;
+            }
+
+            if ( alignsTopBottom5 )
+            {
+                solutions.Solution7.Weight = position.Piece.Weight + firstNewTopOf.Piece.Weight
+                                             + secondNewTopOf.Piece.Weight + firstNewBottomOf.Piece.Weight
+                                             + secondNewBottomOf.Piece.Weight + hyperCubeWeight;
             }
 
             return solutions;
@@ -190,6 +266,8 @@ namespace bbplayer
         {
             var solutions = new SolutionPack( position.ArrayPosition,
                                               new Point( position.ArrayPosition.X, position.ArrayPosition.Y - 1 ) );
+
+            decimal hyperCubeWeight = ( position.Piece == BoardPiece.HyperCube ) ? position.Piece.Weight : 0;
 
             var firstTopOf = _board.TopOf( position );
 
@@ -221,28 +299,59 @@ namespace bbplayer
                                    && ( position.Piece == firstNewLeftOf.Piece )
                                    && ( position.Piece == firstNewRightOf.Piece );
 
+            bool alignsLeftRight4a = ( firstNewLeftOf != null && firstNewRightOf != null && secondNewRightOf != null )
+                                     && position.Piece == firstNewLeftOf.Piece
+                                     && position.Piece == firstNewRightOf.Piece
+                                     && position.Piece == secondNewRightOf.Piece;
+
+            bool alignsLeftRight4b = ( firstNewLeftOf != null && secondNewLeftOf != null && firstNewRightOf != null )
+                                     && position.Piece == firstNewLeftOf.Piece && position.Piece == secondNewLeftOf.Piece
+                                     && position.Piece == firstNewRightOf.Piece;
+
+            bool alignsLeftRight5 = alignsLeftRight4a && ( secondNewLeftOf != null )
+                                    && position.Piece == secondNewLeftOf.Piece;
+
             if ( alignsTop )
             {
                 solutions.Solution1.Weight = position.Piece.Weight + secondTopOf.Piece.Weight
-                                             + thirdTopOf.Piece.Weight;
+                                             + thirdTopOf.Piece.Weight + hyperCubeWeight;
             }
 
             if ( alignsLeft )
             {
                 solutions.Solution2.Weight = position.Piece.Weight + firstNewLeftOf.Piece.Weight
-                                             + secondNewLeftOf.Piece.Weight;
+                                             + secondNewLeftOf.Piece.Weight + hyperCubeWeight;
             }
 
             if ( alignsRight )
             {
                 solutions.Solution3.Weight = position.Piece.Weight + firstNewRightOf.Piece.Weight
-                                             + secondNewRightOf.Piece.Weight;
+                                             + secondNewRightOf.Piece.Weight + hyperCubeWeight;
             }
 
             if ( alignsLeftRight )
             {
                 solutions.Solution4.Weight = position.Piece.Weight + firstNewLeftOf.Piece.Weight
-                                             + firstNewRightOf.Piece.Weight;
+                                             + firstNewRightOf.Piece.Weight + hyperCubeWeight;
+            }
+
+            if ( alignsLeftRight4a )
+            {
+                solutions.Solution5.Weight = position.Piece.Weight + firstNewLeftOf.Piece.Weight
+                                             + firstNewRightOf.Piece.Weight + secondNewRightOf.Piece.Weight + hyperCubeWeight;
+            }
+
+            if ( alignsLeftRight4b )
+            {
+                solutions.Solution6.Weight = position.Piece.Weight + firstNewLeftOf.Piece.Weight
+                                             + secondNewLeftOf.Piece.Weight + firstNewRightOf.Piece.Weight + hyperCubeWeight;
+            }
+
+            if ( alignsLeftRight5 )
+            {
+                solutions.Solution7.Weight = position.Piece.Weight + firstNewLeftOf.Piece.Weight
+                                             + secondNewLeftOf.Piece.Weight + firstNewRightOf.Piece.Weight
+                                             + secondNewRightOf.Piece.Weight + hyperCubeWeight;
             }
 
             return solutions;
@@ -252,6 +361,8 @@ namespace bbplayer
         {
             var solutions = new SolutionPack( position.ArrayPosition,
                                               new Point( position.ArrayPosition.X, position.ArrayPosition.Y + 1 ) );
+
+            decimal hyperCubeWeight = ( position.Piece == BoardPiece.HyperCube ) ? position.Piece.Weight : 0;
 
             var firstBottomOf = _board.BottomOf( position );
 
@@ -283,28 +394,59 @@ namespace bbplayer
                                    && ( position.Piece == firstNewLeftOf.Piece )
                                    && ( position.Piece == firstNewRightOf.Piece );
 
+            bool alignsLeftRight4a = ( firstNewLeftOf != null && firstNewRightOf != null && secondNewRightOf != null )
+                                     && position.Piece == firstNewLeftOf.Piece
+                                     && position.Piece == firstNewRightOf.Piece
+                                     && position.Piece == secondNewRightOf.Piece;
+
+            bool alignsLeftRight4b = ( firstNewLeftOf != null && secondNewLeftOf != null && firstNewRightOf != null )
+                                     && position.Piece == firstNewLeftOf.Piece && position.Piece == secondNewLeftOf.Piece
+                                     && position.Piece == firstNewRightOf.Piece;
+
+            bool alignsLeftRight5 = alignsLeftRight4a && ( secondNewLeftOf != null )
+                                    && position.Piece == secondNewLeftOf.Piece;
+
             if ( alignsBottom )
             {
                 solutions.Solution1.Weight = position.Piece.Weight + secondBottomOf.Piece.Weight
-                                             + thirdBottomOf.Piece.Weight;
+                                             + thirdBottomOf.Piece.Weight + hyperCubeWeight;
             }
 
             if ( alignsLeft )
             {
                 solutions.Solution2.Weight = position.Piece.Weight + firstNewLeftOf.Piece.Weight
-                                             + secondNewLeftOf.Piece.Weight;
+                                             + secondNewLeftOf.Piece.Weight + hyperCubeWeight;
             }
 
             if ( alignsRight )
             {
                 solutions.Solution3.Weight = position.Piece.Weight + firstNewRightOf.Piece.Weight
-                                             + secondNewRightOf.Piece.Weight;
+                                             + secondNewRightOf.Piece.Weight + hyperCubeWeight;
             }
 
             if ( alignsLeftRight )
             {
                 solutions.Solution4.Weight = position.Piece.Weight + firstNewLeftOf.Piece.Weight
-                                             + firstNewRightOf.Piece.Weight;
+                                             + firstNewRightOf.Piece.Weight + hyperCubeWeight;
+            }
+
+            if ( alignsLeftRight4a )
+            {
+                solutions.Solution5.Weight = position.Piece.Weight + firstNewLeftOf.Piece.Weight
+                                             + firstNewRightOf.Piece.Weight + secondNewRightOf.Piece.Weight + hyperCubeWeight;
+            }
+
+            if ( alignsLeftRight4b )
+            {
+                solutions.Solution6.Weight = position.Piece.Weight + firstNewLeftOf.Piece.Weight
+                                             + secondNewLeftOf.Piece.Weight + firstNewRightOf.Piece.Weight + hyperCubeWeight;
+            }
+
+            if ( alignsLeftRight5 )
+            {
+                solutions.Solution7.Weight = position.Piece.Weight + firstNewLeftOf.Piece.Weight
+                                             + secondNewLeftOf.Piece.Weight + firstNewRightOf.Piece.Weight
+                                             + secondNewRightOf.Piece.Weight + hyperCubeWeight;
             }
 
             return solutions;

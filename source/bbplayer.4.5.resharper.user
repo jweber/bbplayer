@@ -3,17 +3,422 @@
     <string />
     <integer />
     <boolean>
-      <setting name="SolutionAnalysisEnabled">False</setting>
+      <setting name="SolutionAnalysisEnabled">True</setting>
     </boolean>
   </SettingsComponent>
   <NAntValidationSettings>
     <NAntPath value="" />
   </NAntValidationSettings>
   <RecentFiles>
-    <RecentFiles />
-    <RecentEdits />
+    <RecentFiles>
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:App.xaml" caret="195" fromTop="3" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:BoardPosition.cs" caret="668" fromTop="21" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:Board.cs" caret="751" fromTop="30" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:ISolutionFinder.cs" caret="185" fromTop="9" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:Solution.cs" caret="290" fromTop="12" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:NaiveBestSolutionFinder.cs" caret="20300" fromTop="414" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml" caret="0" fromTop="0" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:BoardPiece.cs" caret="1592" fromTop="14" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="1183" fromTop="21" />
+    </RecentFiles>
+    <RecentEdits>
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:BoardPiece.cs" caret="5930" fromTop="53" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:BoardPiece.cs" caret="1353" fromTop="18" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:BoardPiece.cs" caret="2230" fromTop="37" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:BoardPiece.cs" caret="3344" fromTop="43" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:BoardPiece.cs" caret="2512" fromTop="32" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:BoardPiece.cs" caret="2036" fromTop="18" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:BoardPiece.cs" caret="3592" fromTop="19" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="10283" fromTop="50" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:BoardPiece.cs" caret="3034" fromTop="47" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:BoardPiece.cs" caret="1398" fromTop="14" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="9944" fromTop="48" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="9206" fromTop="31" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="7029" fromTop="35" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="7027" fromTop="44" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="6476" fromTop="33" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="6871" fromTop="39" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="909" fromTop="20" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="7853" fromTop="23" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="8843" fromTop="43" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="8567" fromTop="37" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="8270" fromTop="31" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="7195" fromTop="19" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="12984" fromTop="39" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="17406" fromTop="60" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="13185" fromTop="45" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="17401" fromTop="60" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="16391" fromTop="29" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="827" fromTop="20" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="1262" fromTop="35" />
+      <File id="409937C6-BC3C-4AC2-90F7-953FE13899CE/f:MainWindow.xaml.cs" caret="1534" fromTop="17" />
+    </RecentEdits>
   </RecentFiles>
   <UnitTestRunner>
     <Providers />
   </UnitTestRunner>
+  <CompletionStatisticsManager>
+    <ItemStatistics item="Default">
+      <Item value="public" priority="34" />
+      <Item value="interface" priority="3" />
+      <Item value="string" priority="4" />
+      <Item value="decimal" priority="5" />
+      <Item value="TFacade" priority="0" />
+      <Item value="IBoardPiece" priority="1" />
+      <Item value="using" priority="1" />
+      <Item value="System" priority="4" />
+      <Item value="Drawing" priority="1" />
+      <Item value="MainWindow" priority="1" />
+      <Item value="private" priority="17" />
+      <Item value="Color" priority="6" />
+      <Item value="BoardPiece" priority="13" />
+      <Item value="_name" priority="1" />
+      <Item value="name" priority="0" />
+      <Item value="_weight" priority="1" />
+      <Item value="weight" priority="0" />
+      <Item value="_color" priority="1" />
+      <Item value="color" priority="0" />
+      <Item value="return" priority="27" />
+      <Item value="Name" priority="0" />
+      <Item value="Weight" priority="0" />
+      <Item value="static" priority="5" />
+      <Item value="Rectangle" priority="5" />
+      <Item value="Windows" priority="3" />
+      <Item value="Shapes" priority="1" />
+      <Item value="BoardPosition" priority="18" />
+      <Item value="Facade" priority="1" />
+      <Item value="rectangle" priority="0" />
+      <Item value="void" priority="10" />
+      <Item value="double" priority="1" />
+      <Item value="bool" priority="16" />
+      <Item value="Dispatcher" priority="6" />
+      <Item value="DispatcherPriority" priority="4" />
+      <Item value="delegate" priority="4" />
+      <Item value="null" priority="40" />
+      <Item value="int" priority="11" />
+      <Item value="progressBar1" priority="6" />
+      <Item value="progress" priority="2" />
+      <Item value="IProgressContext" priority="0" />
+      <Item value="false" priority="6" />
+      <Item value="_canceled" priority="0" />
+      <Item value="SendOrPostCallback" priority="4" />
+      <Item value="Close" priority="0" />
+      <Item value="new" priority="23" />
+      <Item value="Thread" priority="4" />
+      <Item value="ThreadStart" priority="0" />
+      <Item value="RetrieveBoard" priority="1" />
+      <Item value="RangeBase" priority="0" />
+      <Item value="progressBar" priority="1" />
+      <Item value="BoardUpdateDelegate" priority="0" />
+      <Item value="workDelegate" priority="1" />
+      <Item value="ProgressBar" priority="0" />
+      <Item value="Point" priority="8" />
+      <Item value="_boardCalibration" priority="3" />
+      <Item value="_board" priority="29" />
+      <Item value="SetCursorPos" priority="5" />
+      <Item value="setX" priority="1" />
+      <Item value="setY" priority="1" />
+      <Item value="SolutionFinder" priority="1" />
+      <Item value="board" priority="1" />
+      <Item value="Solution" priority="13" />
+      <Item value="for" priority="2" />
+      <Item value="if" priority="27" />
+      <Item value="var" priority="33" />
+      <Item value="Board" priority="2" />
+      <Item value="_boardPositions" priority="2" />
+      <Item value="facade" priority="1" />
+      <Item value="b11" priority="0" />
+      <Item value="this" priority="8" />
+      <Item value="PointConverter" priority="3" />
+      <Item value="Piece" priority="0" />
+      <Item value="piece" priority="1" />
+      <Item value="Position" priority="0" />
+      <Item value="position" priority="75" />
+      <Item value="ArrayPosition" priority="0" />
+      <Item value="arrayPosition" priority="0" />
+      <Item value="boardPiece" priority="2" />
+      <Item value="arrayX" priority="0" />
+      <Item value="arrayY" priority="0" />
+      <Item value="rightOfPosition" priority="2" />
+      <Item value="rightOf" priority="0" />
+      <Item value="firstRightOf" priority="4" />
+      <Item value="secondRightOf" priority="6" />
+      <Item value="thirdRightOf" priority="4" />
+      <Item value="true" priority="0" />
+      <Item value="firstNewTopOf" priority="15" />
+      <Item value="firstNewBottomOf" priority="13" />
+      <Item value="secondNewTopOf" priority="10" />
+      <Item value="secondNewBottomOf" priority="6" />
+      <Item value="alignsRight" priority="2" />
+      <Item value="alignsTop" priority="2" />
+      <Item value="alignsBottom" priority="1" />
+      <Item value="MoveRightSolves" priority="0" />
+      <Item value="Position1" priority="1" />
+      <Item value="Position2" priority="0" />
+      <Item value="e" priority="1" />
+      <Item value="Key" priority="3" />
+      <Item value="sf" priority="0" />
+      <Item value="sol" priority="5" />
+      <Item value="extern" priority="1" />
+      <Item value="uint" priority="2" />
+      <Item value="InputLanguageChangedEventArgs" priority="0" />
+      <Item value="DllImport" priority="0" />
+      <Item value="SetLastError" priority="0" />
+      <Item value="SendInput" priority="0" />
+      <Item value="INPUT" priority="1" />
+      <Item value="INPUT_MOUSE" priority="0" />
+      <Item value="aINPUT" priority="1" />
+      <Item value="MOUSEEVENTF_LEFTDOWN" priority="0" />
+      <Item value="mouseInput1" priority="2" />
+      <Item value="IntPtr" priority="0" />
+      <Item value="MOUSEEVENTF_LEFTUP" priority="0" />
+      <Item value="mouse_event" priority="0" />
+      <Item value="MouseEventFlags" priority="0" />
+      <Item value="UIntPtr" priority="0" />
+      <Item value="Threading" priority="0" />
+      <Item value="solution" priority="1" />
+      <Item value="else" priority="1" />
+      <Item value="GetCursorPos" priority="1" />
+      <Item value="out" priority="1" />
+      <Item value="currentPos" priority="2" />
+      <Item value="Mouse" priority="0" />
+      <Item value="cursor" priority="1" />
+      <Item value="_mainWindow" priority="2" />
+      <Item value="MoveLeftSolves" priority="0" />
+      <Item value="ArrayPosition1" priority="2" />
+      <Item value="ArrayPosition2" priority="2" />
+      <Item value="alignsTopBottom" priority="2" />
+      <Item value="firstTopOf" priority="4" />
+      <Item value="secondTopOf" priority="2" />
+      <Item value="firstNewLeftOf" priority="4" />
+      <Item value="firstNewRightOf" priority="4" />
+      <Item value="thirdTopOf" priority="1" />
+      <Item value="secondNewLeftOf" priority="2" />
+      <Item value="secondNewRightOf" priority="1" />
+      <Item value="alignsLeft" priority="0" />
+      <Item value="alignsLeftRight" priority="0" />
+      <Item value="MoveUpSolves" priority="0" />
+      <Item value="JetBrains" priority="1" />
+      <Item value="dotTrace" priority="1" />
+      <Item value="Api" priority="1" />
+      <Item value="CPUProfiler" priority="1" />
+      <Item value="RefreshBoard" priority="2" />
+      <Item value="FindAndApplySolution" priority="2" />
+      <Item value="ISolutionFinder" priority="1" />
+      <Item value="NaiveFirstSolutionFinder" priority="0" />
+      <Item value="protected" priority="0" />
+      <Item value="virtual" priority="0" />
+      <Item value="override" priority="0" />
+      <Item value="class" priority="0" />
+      <Item value="SolutionPack" priority="6" />
+      <Item value="Solution1" priority="1" />
+      <Item value="solutions" priority="22" />
+      <Item value="initialPosition" priority="1" />
+      <Item value="moveToPosition" priority="1" />
+      <Item value="IList" priority="1" />
+      <Item value="List&lt;Solution&gt;" priority="0" />
+      <Item value="moveRightSolutions" priority="0" />
+      <Item value="moveLeftSolutions" priority="0" />
+      <Item value="moveUpSolutions" priority="0" />
+      <Item value="moveDownSolutions" priority="0" />
+      <Item value="s" priority="2" />
+      <Item value="orderedSolutions" priority="1" />
+      <Item value="enum" priority="0" />
+      <Item value="RootBoardPiece" priority="16" />
+      <Item value="rootBoardPiece" priority="1" />
+      <Item value="left" priority="1" />
+      <Item value="right" priority="0" />
+      <Item value="_rootBoardPiece" priority="0" />
+      <Item value="hue" priority="7" />
+      <Item value="BlueDiamond_Multiplier" priority="0" />
+      <Item value="brightness" priority="11" />
+      <Item value="PurpleTriangle_Multiplier" priority="0" />
+      <Item value="alignsTopBottom4a" priority="1" />
+      <Item value="alignsTopBottom4b" priority="0" />
+      <Item value="alignsTopBottom5" priority="0" />
+      <Item value="alignsLeftRight4a" priority="0" />
+      <Item value="hyperCubeWeight" priority="0" />
+      <Item value="PurpleTriangle_Power" priority="0" />
+      <Item value="BlueDiamond_Power" priority="0" />
+      <Item value="GreenSphere_Power" priority="0" />
+      <Item value="Unknown" priority="0" />
+      <Item value="x" priority="1" />
+      <Item value="Brushes" priority="0" />
+      <Item value="saturation" priority="0" />
+      <Item value="_unknownCount" priority="2" />
+      <Item value="i" priority="1" />
+      <Item value="KeyboardHook" priority="2" />
+      <Item value="_hook" priority="1" />
+      <Item value="HookEventHandler" priority="0" />
+      <Item value="CreateAnonymousDelegate" priority="0" />
+      <Item value="object" priority="0" />
+      <Item value="HotKey" priority="0" />
+      <Item value="args" priority="1" />
+      <Item value="Keys" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Windows.Threading.Dispatcher">
+      <Item value="BeginInvoke" priority="5" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Windows.Threading.DispatcherPriority">
+      <Item value="Background" priority="5" />
+      <Item value="SystemIdle" priority="0" />
+      <Item value="Normal" priority="1" />
+      <Item value="Send" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Windows.Controls.ProgressBar">
+      <Item value="SetValue" priority="1" />
+      <Item value="Value" priority="2" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Threading.Thread">
+      <Item value="Start" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Windows.Controls.Primitives.RangeBase">
+      <Item value="ValueProperty" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:bbplayer.BoardPosition">
+      <Item value="Piece" priority="87" />
+      <Item value="Facade" priority="3" />
+      <Item value="SetPiece" priority="0" />
+      <Item value="ArrayPosition" priority="24" />
+      <Item value="Position" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:bbplayer.Board">
+      <Item value="SetFacade" priority="0" />
+      <Item value="RightOf" priority="7" />
+      <Item value="TopOf" priority="4" />
+      <Item value="BelowOf" priority="0" />
+      <Item value="BottomOf" priority="1" />
+      <Item value="LeftOf" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@bbplayer.BoardPiece">
+      <Item value="FindMatch" priority="0" />
+      <Item value="HyperCube" priority="0" />
+      <Item value="Unknown" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:bbplayer.BoardPiece">
+      <Item value="Name" priority="0" />
+      <Item value="Weight" priority="25" />
+      <Item value="Equals" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Drawing.Point">
+      <Item value="X" priority="16" />
+      <Item value="Y" priority="16" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Windows.Input.KeyEventArgs">
+      <Item value="Key" priority="3" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Windows.Input.Key">
+      <Item value="D3" priority="0" />
+      <Item value="D1" priority="0" />
+      <Item value="D5" priority="0" />
+      <Item value="D6" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:bbplayer.SolutionFinder">
+      <Item value="FindSolution" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:bbplayer.MainWindow+INPUT">
+      <Item value="type" priority="0" />
+      <Item value="mkhi" priority="2" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:bbplayer.MainWindow+MOUSEKEYBDHARDWAREINPUT">
+      <Item value="mi" priority="2" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:bbplayer.MainWindow+MOUSEINPUT">
+      <Item value="dwFlags" priority="0" />
+      <Item value="dx" priority="0" />
+      <Item value="dwExtraInfo" priority="1" />
+      <Item value="mouseData" priority="0" />
+      <Item value="time" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:bbplayer.Solution">
+      <Item value="Position1" priority="0" />
+      <Item value="ArrayPosition1" priority="2" />
+      <Item value="ArrayPosition2" priority="2" />
+      <Item value="Weight" priority="8" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.IntPtr">
+      <Item value="Zero" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@bbplayer.MainWindow+MouseEventFlags">
+      <Item value="LEFTDOWN" priority="0" />
+      <Item value="LEFTUP" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.UIntPtr">
+      <Item value="Zero" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Threading.Thread">
+      <Item value="Sleep" priority="3" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Windows.Controls.Label">
+      <Item value="Content" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.String">
+      <Item value="Format" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:bbplayer.MainWindow">
+      <Item value="Focus" priority="1" />
+      <Item value="PointToScreen" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@JetBrains.dotTrace.Api.CPUProfiler">
+      <Item value="Start" priority="0" />
+      <Item value="StopAndSaveSnapShot" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:bbplayer.NaiveBestSolutionFinder+SolutionPack">
+      <Item value="Solution1" priority="0" />
+      <Item value="Solution2" priority="0" />
+      <Item value="Solution3" priority="0" />
+      <Item value="Solution4" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Collections.Generic.List`1">
+      <Item value="Add" priority="2" />
+      <Item value="OrderBy" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:bbplayer.SolutionPack">
+      <Item value="Solution1" priority="3" />
+      <Item value="AddSolutions" priority="3" />
+      <Item value="Solution5" priority="0" />
+      <Item value="Solution6" priority="0" />
+      <Item value="Solution7" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Linq.IOrderedEnumerable`1">
+      <Item value="First" priority="0" />
+      <Item value="Where" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@bbplayer.BoardPiece+RootBoardPiece">
+      <Item value="RedSquare" priority="1" />
+      <Item value="OrangeDecahedron" priority="0" />
+      <Item value="PurpleTriangle" priority="1" />
+      <Item value="GreenSphere" priority="1" />
+      <Item value="BlueDiamond" priority="1" />
+      <Item value="GrayRock" priority="1" />
+      <Item value="YellowSquare" priority="1" />
+      <Item value="Any" priority="0" />
+      <Item value="None" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Windows.Media.Color">
+      <Item value="FromArgb" priority="2" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Collections.Generic.IList`1">
+      <Item value="Add" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Windows.Shapes.Rectangle">
+      <Item value="Stroke" priority="0" />
+      <Item value="StrokeThickness" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Windows.Media.Brushes">
+      <Item value="Red" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:bbplayer.KeyboardHook">
+      <Item value="KeyDown" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@bbplayer.KeyboardHook">
+      <Item value="HookEventArgs" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:bbplayer.KeyboardHook+HookEventArgs">
+      <Item value="Key" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Windows.Forms.Keys">
+      <Item value="F2" priority="0" />
+    </ItemStatistics>
+  </CompletionStatisticsManager>
 </Configuration>
