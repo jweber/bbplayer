@@ -67,8 +67,6 @@ namespace bbplayer
 
             var orderedSolutions = solutions.OrderByDescending( s => s.Weight );
 
-            var ss = orderedSolutions.Where( s => s.ArrayPosition1.Y == 3 && s.ArrayPosition2.Y == 2 );
-
             return orderedSolutions.First();
         }
 
@@ -77,7 +75,7 @@ namespace bbplayer
             var solutions = new SolutionPack( position.ArrayPosition,
                                               new Point( position.ArrayPosition.X + 1, position.ArrayPosition.Y ) );
 
-            decimal hyperCubeWeight = ( position.Piece == BoardPiece.HyperCube ) ? position.Piece.Weight : 0;
+            int hyperCubeWeight = ( position.Piece == BoardPiece.HyperCube ) ? (int) position.Piece.Weight : 0;
 
             var firstRightOf = _board.RightOf( position );
             

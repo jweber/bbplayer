@@ -78,6 +78,14 @@
         <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,222,0,0" Name="b87" Stroke="Black" VerticalAlignment="Top" Width="24" />
         <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,222,0,0" Name="b88" Stroke="Black" VerticalAlignment="Top" Width="24" />
         <ProgressBar Height="10" HorizontalAlignment="Left" Margin="12,0,0,29" Name="progressBar1" VerticalAlignment="Bottom" Width="100" />
-        <Label HorizontalAlignment="Right" Margin="0,128,131,138" Name="solution" Width="234"></Label>
+        <Label HorizontalAlignment="Right" Margin="0,38,12,0" Name="solution" Width="234" Height="58" VerticalAlignment="Top"></Label>
+        <ListBox Margin="0,132,12,108" Name="listBox1" HorizontalAlignment="Right" Width="130" />
+        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,79" Name="button1" VerticalAlignment="Bottom" Width="49" Click="button1_Click">Clear</Button>
+        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,67,79" Name="button2" VerticalAlignment="Bottom" Width="75" Click="button2_Click">Add</Button>
+        <TextBox Height="23" HorizontalAlignment="Right" Margin="0,0,188,79" Name="xCoord" VerticalAlignment="Bottom" Width="34" />
+        <TextBox Height="23" HorizontalAlignment="Right" Margin="0,0,148,79" Name="yCoord" VerticalAlignment="Bottom" Width="34" />
+        <Button Height="23" HorizontalAlignment="Left" Margin="290,0,0,29" Name="button3" VerticalAlignment="Bottom" Width="74" Click="button3_Click">Calculate</Button>
+        <Label Height="23" Margin="370,0,12,29" Name="avgLuminance" VerticalAlignment="Bottom"></Label>
+        <Image Margin="274,22,268,152" Name="image1" Stretch="Fill" />
     </Grid>
 </Window>

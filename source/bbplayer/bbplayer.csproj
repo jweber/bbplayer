@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="Board.cs" />
     <Compile Include="BoardPosition.cs" />
+    <Compile Include="ColorPoints.cs" />
     <Compile Include="ISolutionFinder.cs" />
     <Compile Include="NaiveBestSolutionFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -94,6 +95,8 @@
     <Compile Include="BoardPiece.cs" />
     <Compile Include="Solution.cs" />
     <Compile Include="NaiveFirstSolutionFinder.cs" />
+    <Compile Include="StringExtensions.cs" />
+    <Compile Include="Tuple.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -103,6 +106,31 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="images\multiplier_blue-diamond.bmp" />
+    <EmbeddedResource Include="images\multiplier_gray-rock.bmp" />
+    <EmbeddedResource Include="images\multiplier_green-sphere.bmp" />
+    <EmbeddedResource Include="images\multiplier_orange-decahedron.bmp" />
+    <EmbeddedResource Include="images\multiplier_red-square.bmp" />
+    <EmbeddedResource Include="images\normal_blue-diamond.bmp" />
+    <EmbeddedResource Include="images\normal_gray-rock.bmp" />
+    <EmbeddedResource Include="images\normal_green-sphere.bmp" />
+    <EmbeddedResource Include="images\normal_orange-decahedron.bmp" />
+    <EmbeddedResource Include="images\normal_purple-triangle.bmp" />
+    <EmbeddedResource Include="images\normal_red-square.bmp" />
+    <EmbeddedResource Include="images\normal_yellow-square.bmp" />
+    <EmbeddedResource Include="images\power_blue-diamond.bmp" />
+    <EmbeddedResource Include="images\power_gray-rock.bmp" />
+    <EmbeddedResource Include="images\power_green-sphere.bmp" />
+    <EmbeddedResource Include="images\power_orange-decahedron.bmp" />
+    <EmbeddedResource Include="images\power_purple-triangle.bmp" />
+    <EmbeddedResource Include="images\power_red-square.bmp" />
+    <EmbeddedResource Include="images\power_yellow-square.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="images\hypercube.bmp" />
+    <EmbeddedResource Include="images\multiplier_yellow-square.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

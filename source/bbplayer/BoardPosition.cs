@@ -5,6 +5,9 @@ namespace bbplayer
 {
     class BoardPosition
     {
+        public BoardPosition()
+        {}
+
         public BoardPosition( Rectangle facade )
         {
             Facade = facade;
