@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -10,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -30,6 +33,8 @@ namespace bbplayer
         private Point _boardCalibration;
         private Board _board;
         private IntPtr _dc;
+
+        private Point _boardTopLeft, _boardBottomRight;
 
         public MainWindow()
         {
@@ -121,30 +126,55 @@ namespace bbplayer
             _board[7, 7] = new BoardPosition( b88 );
         }
 
+//        private byte[] ImageToByteArray(Image image)
+//        {
+//            var ms = new MemoryStream();
+//            image.Save(ms, image.RawFormat);
+//            return ms.ToArray();
+//        }
+//
+//        private BitmapImage ImageFromBuffer(byte[] bytes)
+//        {
+//            var stream = new MemoryStream(bytes);
+//            var bm = new BitmapImage();
+//            bm.BeginInit();
+//            bm.StreamSource = stream;
+//            bm.EndInit();
+//            return bm;
+//        }
+
+        private Bitmap _bitmap;
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
+            if (e.Key == Key.OemTilde)
+            {
+                Point cursor;
+                GetCursorPos(out cursor);
+                _mainWindow = cursor;
+            }
+
             if ( e.Key == Key.D1 )
             {
                 Point cursor;
                 GetCursorPos( out cursor );
-                _mainWindow = cursor;
+                //_mainWindow = cursor;
+                _boardTopLeft = cursor;
+                this.labelTopLeft.Content = string.Format("Board top left: X:{0}; Y:{1}", cursor.X, cursor.Y);
             }
 
             if ( e.Key == Key.D2 )
             {
                 Point cursor;
                 GetCursorPos(out cursor);
-                _boardCalibration = new Point( cursor.X - 22 - 2, cursor.Y - 19 + 3 );
-                label1.Content = string.Format("Calibration: X:{0}; Y:{1}", cursor.X, cursor.Y);
+                _boardBottomRight = cursor;
+                labelBottomRight.Content = string.Format("Board bottom right: X:{0}; Y:{1}", cursor.X, cursor.Y);
             }
 
             if ( e.Key == Key.D3 )
             {
-                //JetBrains.dotTrace.Api.CPUProfiler.Start();
-
-                RefreshBoard();
-
-                //JetBrains.dotTrace.Api.CPUProfiler.StopAndSaveSnapShot();
+                this.UpdateBitmap();
+                this.RefreshBoardFromBitmap();
             }
 
             if ( e.Key == Key.D4 )
@@ -154,16 +184,42 @@ namespace bbplayer
 
             if ( e.Key == Key.D5 )
             {
-                RefreshBoard();
+                this.UpdateBitmap();
+                RefreshBoardFromBitmap();
 
-                if ( _unknownCount > 0 )
+                int tryCounter = 0;
+                while (_unknownCount > 0)
                 {
-                    RefreshBoard();
+                    this.UpdateBitmap();
+                    this.RefreshBoardFromBitmap();
                     Thread.Sleep( 100 );
+
+                    if ((tryCounter++) > 10)
+                        break;
                 }
 
                 Thread.Sleep( 100 );
                 FindAndApplySolution();
+            }
+            
+            if ( e.Key == Key.D6 )
+            {
+                this.UpdateBitmap();
+                RefreshBoardFromBitmap();
+
+                int tryCounter = 0;
+                while (_unknownCount > 0)
+                {
+                    this.UpdateBitmap();
+                    this.RefreshBoardFromBitmap();
+                    Thread.Sleep( 100 );
+
+                    if ((tryCounter++) > 10)
+                        break;
+                }
+
+                Thread.Sleep( 100 );
+                FindAndApplySolution(chooseRandom: true);
             }
 
             if ( e.Key == Key.H )
@@ -175,17 +231,43 @@ namespace bbplayer
             base.OnKeyDown(e);
         }
 
-        private void FindAndApplySolution()
+        private void UpdateBitmap()
+        {
+            var size = new System.Drawing.Size(_boardBottomRight.X - _boardTopLeft.X, _boardBottomRight.Y - _boardTopLeft.Y);
+
+            _bitmap = new Bitmap(size.Width, size.Height);
+            Graphics gra = Graphics.FromImage(_bitmap);
+            gra.CopyFromScreen(_boardTopLeft, new Point(0, 0), size);            
+
+            BitmapSource bs = Imaging.CreateBitmapSourceFromHBitmap(
+                _bitmap.GetHbitmap(), 
+                IntPtr.Zero,
+                Int32Rect.Empty, 
+                BitmapSizeOptions.FromEmptyOptions());
+
+            image1.Source = bs;            
+        }
+
+        private static Random random = new Random();
+        private void FindAndApplySolution(bool chooseRandom = false)
         {
             var sf = new NaiveBestSolutionFinder( _board );
-            var sol = sf.FindSolution();
+            var sol = sf.FindSolutions();
 
             Point currentPos;
             GetCursorPos( out currentPos );
 
             if ( sol != null )
             {
-                ApplySolution( sol );                    
+                if (chooseRandom)
+                {
+                    int randomSolution = random.Next(0, sol.Length - 1);
+                    this.ApplySolution(sol[randomSolution]);
+                }
+                else
+                {
+                    ApplySolution(sol.First());
+                }
             }
             else
             {
@@ -202,8 +284,10 @@ namespace bbplayer
                                               sol.ArrayPosition2.Y,
                                               sol.Weight );
 
-            SetCursorPos( _boardCalibration.X + ( sol.ArrayPosition1.X * 40 ),
-                          _boardCalibration.Y + ( sol.ArrayPosition1.Y * 40 ) );
+//            SetCursorPos( _boardCalibration.X + ( sol.ArrayPosition1.X * 40 ),
+//                          _boardCalibration.Y + ( sol.ArrayPosition1.Y * 40 ) );
+            SetCursorPos( _boardTopLeft.X + 20 + ( sol.ArrayPosition1.X * 40 ),
+                          _boardTopLeft.Y + 20 + ( sol.ArrayPosition1.Y * 40 ) );
 
             mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
             Thread.Sleep( 50 );
@@ -211,8 +295,10 @@ namespace bbplayer
 
             Thread.Sleep( 100 );
 
-            SetCursorPos( _boardCalibration.X + ( sol.ArrayPosition2.X * 40 ),
-                          _boardCalibration.Y + ( sol.ArrayPosition2.Y * 40 ) );
+//            SetCursorPos( _boardCalibration.X + ( sol.ArrayPosition2.X * 40 ),
+//                          _boardCalibration.Y + ( sol.ArrayPosition2.Y * 40 ) );
+            SetCursorPos( _boardTopLeft.X + 20 + ( sol.ArrayPosition2.X * 40 ),
+                          _boardTopLeft.Y + 20 + ( sol.ArrayPosition2.Y * 40 ) );
 
             mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
             Thread.Sleep( 50 );
@@ -220,6 +306,8 @@ namespace bbplayer
 
 
             SetCursorPos( _mainWindow.X, _mainWindow.Y );
+            //SetActiveWindow(new WindowInteropHelper(this).Handle);
+
             mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
             Thread.Sleep( 20 );
             mouse_event( (uint)MouseEventFlags.LEFTUP, 0, 0, 0, UIntPtr.Zero );            
@@ -227,6 +315,66 @@ namespace bbplayer
 
         private int _unknownCount;
         private int _refreshCount;
+
+        private BitmapImage BitmapToImageSource(Bitmap bitmap, ImageFormat imgFormat)
+        {
+            using (MemoryStream memory = new MemoryStream())
+            {
+                bitmap.Save(memory, imgFormat);
+                memory.Position = 0;
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+
+                return bitmapImage;
+            }
+        }
+
+        private void RefreshBoardFromBitmap()
+        {
+            _unknownCount = 0;
+
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    int setX = (40*x)+20;
+                    int setY = (40*y)+20;
+
+                    int screenX = _boardTopLeft.X + setX;
+                    int screenY = _boardTopLeft.Y + setY;
+                    //SetCursorPos(screenX, screenY);
+
+                    //Thread.Sleep(500);
+
+                    var colorPoints = this.GetColorPointsFromBitmap(setX, setY);
+                    var boardPiece = BoardPiece.FindMatch(colorPoints);
+
+                    _board[y, x].Facade.Fill = new SolidColorBrush(ConvertToMediaColor(colorPoints.Center));
+                    _board[y, x].Facade.ToolTip = boardPiece.Name;
+
+                    if (boardPiece.GetImage() != null)
+                        _board[y, x].Facade.Fill = new ImageBrush(this.BitmapToImageSource(boardPiece.GetImage(), ImageFormat.Bmp));
+                    
+                    
+                    if (boardPiece == BoardPiece.Unknown)
+                    {
+                        _unknownCount++;
+                        _board[y, x].Facade.Stroke = Brushes.Red;
+                        _board[y, x].Facade.StrokeThickness = 3;
+                    }
+                    else
+                    {
+                        _board[y, x].Facade.Stroke = Brushes.Black;
+                        _board[y, x].Facade.StrokeThickness = 1;
+                    }
+
+                    _board[y, x].SetPiece(boardPiece, new Point(setX, setY), y, x);
+                }
+            }
+        }
 
         private void RefreshBoard()
         {
@@ -395,7 +543,31 @@ namespace bbplayer
             public IDictionary<RootBoardPiece, int> RootBoardPieceWeights { get; private set; }
         }
 
+        private ColorPoints GetColorPointsFromBitmap(int x, int y)
+        {
+            System.Drawing.Color centerColor = _bitmap.GetPixel(x, y);
+            var leftColor = _bitmap.GetPixel(x + ColorPoints.LeftMostOffset, y);
+            var rightColor = _bitmap.GetPixel(x + ColorPoints.RightMostOffset, y );
 
+            var topMaxColor = _bitmap.GetPixel(x, y + ColorPoints.TopMostOffset );
+            var bottomMaxColor = _bitmap.GetPixel(x, y + ColorPoints.BottomMostOffset );
+
+            var topMidColor = _bitmap.GetPixel(x, y - ColorPoints.TopMiddleOffset );
+            var bottomMidColor = _bitmap.GetPixel(x, y + ColorPoints.BottomMiddleOffset );
+
+            var colorPoints = new ColorPoints
+            {
+                Center = ConvertToDrawingColor(ConvertToMediaColor(centerColor)),
+                TopMost = ConvertToDrawingColor(ConvertToMediaColor(topMaxColor)),
+                TopMiddle = ConvertToDrawingColor(ConvertToMediaColor(topMidColor)),
+                BottomMost = ConvertToDrawingColor(ConvertToMediaColor(bottomMaxColor)),
+                BottomMiddle = ConvertToDrawingColor(ConvertToMediaColor(bottomMidColor)),
+                LeftMost = ConvertToDrawingColor(ConvertToMediaColor(leftColor)),
+                RightMost = ConvertToDrawingColor(ConvertToMediaColor(rightColor))
+            };
+
+            return colorPoints;
+        }
 
         private ColorPoints GetColorPointsFrom( IntPtr dc, int x, int y )
         {          
@@ -521,6 +693,12 @@ namespace bbplayer
 
         [DllImport("user32.dll")]
         static extern void mouse_event( uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo );
+
+        [DllImport("user32.dll")]
+        public static extern int SetActiveWindow(IntPtr hWnd);
+        
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [Flags]
         public enum MouseEventFlags

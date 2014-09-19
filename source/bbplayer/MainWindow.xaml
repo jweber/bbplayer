@@ -1,91 +1,97 @@
 ﻿<Window x:Class="bbplayer.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="bbplayer" Height="362" Width="764">
+    Title="bbplayer" Height="633" Width="947">
     <Grid>
-        <StatusBar Height="23" Name="statusBar1" VerticalAlignment="Bottom">
-            <TextBlock x:Name="cursorXStatus">X:</TextBlock>
-            <Separator></Separator>
-            <TextBlock x:Name="cursorYStatus">Y:</TextBlock>
-            <Separator></Separator>
-            <TextBlock x:Name="coloredStatus"></TextBlock>
-            <Separator></Separator>
-            <TextBlock x:Name="bgColorStatus">Color:</TextBlock>
+        <Image Margin="274,55,10,29" x:Name="image1" Stretch="None" />
+        <StatusBar Height="23" x:Name="statusBar1" VerticalAlignment="Bottom">
+            <TextBlock x:Name="cursorXStatus"><Run Text="X:"/></TextBlock>
+            <Separator/>
+            <TextBlock x:Name="cursorYStatus"><Run Text="Y:"/></TextBlock>
+            <Separator/>
+            <TextBlock x:Name="coloredStatus"/>
+            <Separator/>
+            <TextBlock x:Name="bgColorStatus"><Run Text="Color:"/></TextBlock>
         </StatusBar>
-        <Label Height="28" Margin="0,12,12,0" Name="label1" VerticalAlignment="Top" HorizontalAlignment="Right" Width="263"></Label>
-        <Rectangle HorizontalAlignment="Left" Margin="12,12,0,0" Name="b11" Stroke="Black" Width="24" Fill="AliceBlue" Height="24" VerticalAlignment="Top" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,12,0,0" Name="b12" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,12,0,0" Name="b13" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,12,0,0" Name="b14" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="132,12,0,0" Name="b15" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,12,0,0" Name="b16" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,12,0,0" Name="b17" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,12,0,0" Name="b18" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="12,42,0,0" Name="b21" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,42,0,0" Name="b22" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,42,0,0" Name="b23" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,42,0,0" Name="b24" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="132,42,0,0" Name="b25" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,42,0,0" Name="b26" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,42,0,0" Name="b27" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,42,0,0" Name="b28" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" Name="b31" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,72,0,0" Name="b32" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,72,0,0" Name="b33" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,72,0,0" Name="b34" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="132,72,0,0" Name="b35" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,72,0,0" Name="b36" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,72,0,0" Name="b37" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,72,0,0" Name="b38" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="12,102,0,0" Name="b41" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,102,0,0" Name="b42" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,102,0,0" Name="b43" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,102,0,0" Name="b44" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="132,102,0,0" Name="b45" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,102,0,0" Name="b46" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,102,0,0" Name="b47" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,102,0,0" Name="b48" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="12,132,0,0" Name="b51" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,132,0,0" Name="b52" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,132,0,0" Name="b53" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,132,0,0" Name="b54" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="132,132,0,0" Name="b55" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,132,0,0" Name="b56" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,132,0,0" Name="b57" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,132,0,0" Name="b58" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="12,162,0,138" Name="b61" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
-        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="42,162,0,138" Name="b62" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
-        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="72,162,0,138" Name="b63" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
-        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="102,162,0,138" Name="b64" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
-        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="132,162,0,138" Name="b65" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
-        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="162,162,0,138" Name="b66" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
-        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="192,162,0,138" Name="b67" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
-        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="222,162,0,138" Name="b68" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="12,192,0,0" Name="b71" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,192,0,0" Name="b72" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,192,0,0" Name="b73" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,192,0,0" Name="b74" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="132,192,0,0" Name="b75" Stroke="Black" Width="24" Height="24" VerticalAlignment="Top" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,192,0,0" Name="b76" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,192,0,0" Name="b77" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,192,0,0" Name="b78" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="12,222,0,0" Name="b81" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,222,0,0" Name="b82" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,222,0,0" Name="b83" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,222,0,0" Name="b84" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="132,222,0,0" Name="b85" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,222,0,0" Name="b86" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,222,0,0" Name="b87" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,222,0,0" Name="b88" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <ProgressBar Height="10" HorizontalAlignment="Left" Margin="12,0,0,29" Name="progressBar1" VerticalAlignment="Bottom" Width="100" />
-        <Label HorizontalAlignment="Right" Margin="0,38,12,0" Name="solution" Width="234" Height="58" VerticalAlignment="Top"></Label>
-        <ListBox Margin="0,132,12,108" Name="listBox1" HorizontalAlignment="Right" Width="130" />
-        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,79" Name="button1" VerticalAlignment="Bottom" Width="49" Click="button1_Click">Clear</Button>
-        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,67,79" Name="button2" VerticalAlignment="Bottom" Width="75" Click="button2_Click">Add</Button>
-        <TextBox Height="23" HorizontalAlignment="Right" Margin="0,0,188,79" Name="xCoord" VerticalAlignment="Bottom" Width="34" />
-        <TextBox Height="23" HorizontalAlignment="Right" Margin="0,0,148,79" Name="yCoord" VerticalAlignment="Bottom" Width="34" />
-        <Button Height="23" HorizontalAlignment="Left" Margin="290,0,0,29" Name="button3" VerticalAlignment="Bottom" Width="74" Click="button3_Click">Calculate</Button>
-        <Label Height="23" Margin="370,0,12,29" Name="avgLuminance" VerticalAlignment="Bottom"></Label>
-        <Image Margin="274,22,268,152" Name="image1" Stretch="Fill" />
+        <Label Content="Press '1' at board top left" Height="28" Margin="0,8,461,0" x:Name="labelTopLeft" VerticalAlignment="Top" HorizontalAlignment="Right" Width="215"/>
+        <Label Content="Press '2' at board bottom right" Height="28" Margin="0,8,212,0" Name="labelBottomRight" HorizontalAlignment="Right" VerticalAlignment="Top" Width="215"/>
+        <Rectangle HorizontalAlignment="Left" Margin="12,12,0,0" x:Name="b11" Stroke="Black" Width="24" Fill="AliceBlue" Height="24" VerticalAlignment="Top" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,12,0,0" x:Name="b12" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,12,0,0" x:Name="b13" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,12,0,0" x:Name="b14" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="132,12,0,0" x:Name="b15" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,12,0,0" x:Name="b16" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,12,0,0" x:Name="b17" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,12,0,0" x:Name="b18" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="12,42,0,0" x:Name="b21" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,42,0,0" x:Name="b22" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,42,0,0" x:Name="b23" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,42,0,0" x:Name="b24" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="132,42,0,0" x:Name="b25" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,42,0,0" x:Name="b26" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,42,0,0" x:Name="b27" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,42,0,0" x:Name="b28" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" x:Name="b31" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,72,0,0" x:Name="b32" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,72,0,0" x:Name="b33" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,72,0,0" x:Name="b34" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="132,72,0,0" x:Name="b35" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,72,0,0" x:Name="b36" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,72,0,0" x:Name="b37" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,72,0,0" x:Name="b38" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="12,102,0,0" x:Name="b41" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,102,0,0" x:Name="b42" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,102,0,0" x:Name="b43" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,102,0,0" x:Name="b44" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="132,102,0,0" x:Name="b45" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,102,0,0" x:Name="b46" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,102,0,0" x:Name="b47" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,102,0,0" x:Name="b48" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="12,132,0,0" x:Name="b51" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,132,0,0" x:Name="b52" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,132,0,0" x:Name="b53" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,132,0,0" x:Name="b54" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="132,132,0,0" x:Name="b55" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,132,0,0" x:Name="b56" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,132,0,0" x:Name="b57" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,132,0,0" x:Name="b58" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="12,162,0,138" x:Name="b61" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
+        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="42,162,0,138" x:Name="b62" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
+        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="72,162,0,138" x:Name="b63" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
+        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="102,162,0,138" x:Name="b64" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
+        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="132,162,0,138" x:Name="b65" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
+        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="162,162,0,138" x:Name="b66" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
+        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="192,162,0,138" x:Name="b67" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
+        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="222,162,0,138" x:Name="b68" Stroke="Black" Width="24" VerticalAlignment="Top" Height="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="12,192,0,0" x:Name="b71" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,192,0,0" x:Name="b72" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,192,0,0" x:Name="b73" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,192,0,0" x:Name="b74" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" HorizontalAlignment="Left" Margin="132,192,0,0" x:Name="b75" Stroke="Black" Width="24" Height="24" VerticalAlignment="Top" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,192,0,0" x:Name="b76" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,192,0,0" x:Name="b77" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,192,0,0" x:Name="b78" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="12,222,0,0" x:Name="b81" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="42,222,0,0" x:Name="b82" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="72,222,0,0" x:Name="b83" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="102,222,0,0" x:Name="b84" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="132,222,0,0" x:Name="b85" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,222,0,0" x:Name="b86" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,222,0,0" x:Name="b87" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <Rectangle Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,222,0,0" x:Name="b88" Stroke="Black" VerticalAlignment="Top" Width="24" />
+        <ProgressBar Height="10" HorizontalAlignment="Left" Margin="12,0,0,29" x:Name="progressBar1" VerticalAlignment="Bottom" Width="100" />
+        <Label HorizontalAlignment="Right" Margin="0,38,12,0" x:Name="solution" Width="234" Height="58" VerticalAlignment="Top"/>
+        <ListBox Margin="12,260,0,111" x:Name="listBox1" HorizontalAlignment="Left" Width="130" />
+        <Button Height="23" Margin="170,0,0,71" x:Name="button1" VerticalAlignment="Bottom" Click="button1_Click" Content="Clear" HorizontalAlignment="Left" Width="94"/>
+        <Button Height="23" Margin="90,0,0,71" x:Name="button2" VerticalAlignment="Bottom" Click="button2_Click" Content="Add" HorizontalAlignment="Left" Width="75"/>
+        <TextBox Height="23" Margin="12,0,0,71" x:Name="xCoord" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="34" />
+        <TextBox Height="23" Margin="51,0,0,71" x:Name="yCoord" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="34" />
+        <Button Height="23" HorizontalAlignment="Left" Margin="132,0,0,29" x:Name="button3" VerticalAlignment="Bottom" Width="74" Click="button3_Click" Content="Calculate"/>
+        <Label Height="23" Margin="370,0,12,29" x:Name="avgLuminance" VerticalAlignment="Bottom"/>
+        <Label Content="" HorizontalAlignment="Left" Margin="837,10,0,0" VerticalAlignment="Top" Name="lblUnknown">
+            <Label.Effect>
+                <DropShadowEffect ShadowDepth="0" Color="Red"/>
+            </Label.Effect>
+        </Label>
     </Grid>
 </Window>

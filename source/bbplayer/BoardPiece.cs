@@ -189,6 +189,8 @@ namespace bbplayer
         {
             var matches = new List<MatchPair>();
 
+            matches.Add(new MatchPair(Unknown.MatchAgainst(colorPoints), Unknown));
+
             matches.Add( new MatchPair( HyperCube.MatchAgainst( colorPoints ), HyperCube ) );
 
             matches.Add( new MatchPair( RedSquare.MatchAgainst( colorPoints ), RedSquare ) );

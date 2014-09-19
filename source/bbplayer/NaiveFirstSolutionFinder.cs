@@ -15,41 +15,52 @@ namespace bbplayer
             _board = board;
         }
 
-        public virtual Solution FindSolution()
+        public virtual Solution[] FindSolutions()
         {
-            for ( int y = 7; y >= 0; y-- )
+            for (int y = 7; y >= 0; y--)
             {
-                for ( int x = 0; x < 8; x++ )
+                for (int x = 0; x < 8; x++)
                 {
                     var position = _board[y, x];
-                    if ( MoveRightSolves( position ) )
-                        return new Solution
+                    if (MoveRightSolves(position))
+                        return new[]
                         {
-                            ArrayPosition1 = position.ArrayPosition,
-                            ArrayPosition2 = new Point( position.ArrayPosition.X + 1, position.ArrayPosition.Y )
+                            new Solution
+                            {
+                                ArrayPosition1 = position.ArrayPosition,
+                                ArrayPosition2 = new Point(position.ArrayPosition.X + 1, position.ArrayPosition.Y)
+                            }
                         };
 
-                    if ( MoveLeftSolves( position ) )
-                        return new Solution
+                    if (MoveLeftSolves(position))
+                        return new[]
                         {
-                            ArrayPosition1 = position.ArrayPosition,
-                            ArrayPosition2 = new Point( position.ArrayPosition.X - 1, position.ArrayPosition.Y )
+                            new Solution
+                            {
+                                ArrayPosition1 = position.ArrayPosition,
+                                ArrayPosition2 = new Point(position.ArrayPosition.X - 1, position.ArrayPosition.Y)
+                            }
                         };
 
-                    if ( MoveUpSolves( position ) )
-                        return new Solution
+                    if (MoveUpSolves(position))
+                        return new[]
                         {
-                            ArrayPosition1 = position.ArrayPosition,
-                            ArrayPosition2 = new Point( position.ArrayPosition.X, position.ArrayPosition.Y - 1 )
+                            new Solution
+                            {
+                                ArrayPosition1 = position.ArrayPosition,
+                                ArrayPosition2 = new Point(position.ArrayPosition.X, position.ArrayPosition.Y - 1)
+                            }
                         };
 
-                    if ( MoveDownSolves( position ) )
-                        return new Solution
+                    if (MoveDownSolves(position))
+                        return new[]
                         {
-                            ArrayPosition1 = position.ArrayPosition,
-                            ArrayPosition2 = new Point( position.ArrayPosition.X, position.ArrayPosition.Y + 1 )
+                            new Solution
+                            {
+                                ArrayPosition1 = position.ArrayPosition,
+                                ArrayPosition2 = new Point(position.ArrayPosition.X, position.ArrayPosition.Y + 1)
+                            }
                         };
-
                 }
             }
 

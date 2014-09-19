@@ -49,7 +49,7 @@ namespace bbplayer
             _board = board;
         }
 
-        public Solution FindSolution()
+        public Solution[] FindSolutions()
         {
             List<Solution> solutions = new List<Solution>();
 
@@ -67,7 +67,7 @@ namespace bbplayer
 
             var orderedSolutions = solutions.OrderByDescending( s => s.Weight );
 
-            return orderedSolutions.First();
+            return orderedSolutions.ToArray();
         }
 
         protected virtual SolutionPack MoveRightSolves( BoardPosition position )
