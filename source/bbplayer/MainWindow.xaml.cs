@@ -40,10 +40,10 @@ namespace bbplayer
         {
             InitializeComponent();
 
-//            var timer = new DispatcherTimer();
-//            timer.Interval = TimeSpan.FromMilliseconds( 100 );
-//            timer.Tick += CapturePixelColorUnderCursor;
-//            timer.Start();
+            var timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds( 100 );
+            timer.Tick += CapturePixelColorUnderCursor;
+            timer.Start();
 
             _board = new Board();
             InitializeBoard();
@@ -147,50 +147,35 @@ namespace bbplayer
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (e.Key == Key.OemTilde)
-            {
-                Point cursor;
-                GetCursorPos(out cursor);
-                _mainWindow = cursor;
-            }
-
             if ( e.Key == Key.D1 )
             {
                 Point cursor;
                 GetCursorPos( out cursor );
-                //_mainWindow = cursor;
                 _boardTopLeft = cursor;
-                this.labelTopLeft.Content = string.Format("Board top left: X:{0}; Y:{1}", cursor.X, cursor.Y);
+                _boardBottomRight = new Point(cursor.X + (40*8), cursor.Y + (40*8));
+                this.labelTopLeft.Content = string.Format("Board top left: X:{0}; Y:{1}", _boardTopLeft.X, _boardTopLeft.Y);
+                labelBottomRight.Content = string.Format("Board bottom right: X:{0}; Y:{1}", _boardBottomRight.X, _boardBottomRight.Y);
+
+                this.RefreshBoardFromBitmap();
             }
 
             if ( e.Key == Key.D2 )
             {
-                Point cursor;
-                GetCursorPos(out cursor);
-                _boardBottomRight = cursor;
-                labelBottomRight.Content = string.Format("Board bottom right: X:{0}; Y:{1}", cursor.X, cursor.Y);
+                this.RefreshBoardFromBitmap();
             }
 
             if ( e.Key == Key.D3 )
             {
-                this.UpdateBitmap();
-                this.RefreshBoardFromBitmap();
+                FindAndApplySolution();
             }
 
             if ( e.Key == Key.D4 )
             {
-                FindAndApplySolution();
-            }
-
-            if ( e.Key == Key.D5 )
-            {
-                this.UpdateBitmap();
-                RefreshBoardFromBitmap();
+                this.RefreshBoardFromBitmap();
 
                 int tryCounter = 0;
                 while (_unknownCount > 0)
                 {
-                    this.UpdateBitmap();
                     this.RefreshBoardFromBitmap();
                     Thread.Sleep( 100 );
 
@@ -202,15 +187,13 @@ namespace bbplayer
                 FindAndApplySolution();
             }
             
-            if ( e.Key == Key.D6 )
+            if ( e.Key == Key.D5 )
             {
-                this.UpdateBitmap();
                 RefreshBoardFromBitmap();
 
                 int tryCounter = 0;
                 while (_unknownCount > 0)
                 {
-                    this.UpdateBitmap();
                     this.RefreshBoardFromBitmap();
                     Thread.Sleep( 100 );
 
@@ -284,8 +267,6 @@ namespace bbplayer
                                               sol.ArrayPosition2.Y,
                                               sol.Weight );
 
-//            SetCursorPos( _boardCalibration.X + ( sol.ArrayPosition1.X * 40 ),
-//                          _boardCalibration.Y + ( sol.ArrayPosition1.Y * 40 ) );
             SetCursorPos( _boardTopLeft.X + 20 + ( sol.ArrayPosition1.X * 40 ),
                           _boardTopLeft.Y + 20 + ( sol.ArrayPosition1.Y * 40 ) );
 
@@ -295,8 +276,6 @@ namespace bbplayer
 
             Thread.Sleep( 100 );
 
-//            SetCursorPos( _boardCalibration.X + ( sol.ArrayPosition2.X * 40 ),
-//                          _boardCalibration.Y + ( sol.ArrayPosition2.Y * 40 ) );
             SetCursorPos( _boardTopLeft.X + 20 + ( sol.ArrayPosition2.X * 40 ),
                           _boardTopLeft.Y + 20 + ( sol.ArrayPosition2.Y * 40 ) );
 
@@ -304,13 +283,7 @@ namespace bbplayer
             Thread.Sleep( 50 );
             mouse_event( (uint)MouseEventFlags.LEFTUP, 0, 0, 0, UIntPtr.Zero );
 
-
-            SetCursorPos( _mainWindow.X, _mainWindow.Y );
-            //SetActiveWindow(new WindowInteropHelper(this).Handle);
-
-            mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
-            Thread.Sleep( 20 );
-            mouse_event( (uint)MouseEventFlags.LEFTUP, 0, 0, 0, UIntPtr.Zero );            
+            SetForegroundWindow(new WindowInteropHelper(this).Handle);       
         }
 
         private int _unknownCount;
@@ -334,6 +307,8 @@ namespace bbplayer
 
         private void RefreshBoardFromBitmap()
         {
+            this.UpdateBitmap();
+
             _unknownCount = 0;
 
             for (int y = 0; y < 8; y++)
@@ -693,9 +668,6 @@ namespace bbplayer
 
         [DllImport("user32.dll")]
         static extern void mouse_event( uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo );
-
-        [DllImport("user32.dll")]
-        public static extern int SetActiveWindow(IntPtr hWnd);
         
         [DllImport("user32.dll")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
