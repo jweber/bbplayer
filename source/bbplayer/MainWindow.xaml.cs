@@ -7,8 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.AccessControl;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -20,6 +22,7 @@ using Brush=System.Drawing.Brush;
 using Brushes=System.Windows.Media.Brushes;
 using Color=System.Windows.Media.Color;
 using KeyEventArgs=System.Windows.Input.KeyEventArgs;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 using Point=System.Drawing.Point;
 
 namespace bbplayer
@@ -153,8 +156,6 @@ namespace bbplayer
                 GetCursorPos( out cursor );
                 _boardTopLeft = cursor;
                 _boardBottomRight = new Point(cursor.X + (40*8), cursor.Y + (40*8));
-                this.labelTopLeft.Content = string.Format("Board top left: X:{0}; Y:{1}", _boardTopLeft.X, _boardTopLeft.Y);
-                labelBottomRight.Content = string.Format("Board bottom right: X:{0}; Y:{1}", _boardBottomRight.X, _boardBottomRight.Y);
 
                 this.RefreshBoardFromBitmap();
             }
@@ -291,6 +292,9 @@ namespace bbplayer
 
         private BitmapImage BitmapToImageSource(Bitmap bitmap, ImageFormat imgFormat)
         {
+            if (bitmap == null)
+                return null;
+
             using (MemoryStream memory = new MemoryStream())
             {
                 bitmap.Save(memory, imgFormat);
@@ -315,8 +319,8 @@ namespace bbplayer
             {
                 for (int x = 0; x < 8; x++)
                 {
-                    int setX = (40*x)+20;
-                    int setY = (40*y)+20;
+                    int setX = 40*x;
+                    int setY = 40*y;
 
                     int screenX = _boardTopLeft.X + setX;
                     int screenY = _boardTopLeft.Y + setY;
@@ -324,17 +328,19 @@ namespace bbplayer
 
                     //Thread.Sleep(500);
 
-                    var colorPoints = this.GetColorPointsFromBitmap(setX, setY);
-                    var boardPiece = BoardPiece.FindMatch(colorPoints);
+                    var averageColor = ColorUtility.GetAveragePieceColor(_bitmap, setX, setY);
+                    
+                    var matches = BoardPiece.FindMatches(averageColor);
+                    var closestMatch = matches.GetClosestMatch().BoardPiece;
 
-                    _board[y, x].Facade.Fill = new SolidColorBrush(ConvertToMediaColor(colorPoints.Center));
-                    _board[y, x].Facade.ToolTip = boardPiece.Name;
+                    _board[y, x].Facade.Fill = new SolidColorBrush(ConvertToMediaColor(averageColor));
+                    _board[y, x].Facade.ToolTip = closestMatch.Name;
 
-                    if (boardPiece.GetImage() != null)
-                        _board[y, x].Facade.Fill = new ImageBrush(this.BitmapToImageSource(boardPiece.GetImage(), ImageFormat.Bmp));
+                    if (closestMatch.GetImage() != null)
+                        _board[y, x].Facade.Fill = new ImageBrush(this.BitmapToImageSource(closestMatch.GetImage(), ImageFormat.Bmp));
                     
                     
-                    if (boardPiece == BoardPiece.Unknown)
+                    if (closestMatch == BoardPiece.Unknown)
                     {
                         _unknownCount++;
                         _board[y, x].Facade.Stroke = Brushes.Red;
@@ -346,69 +352,9 @@ namespace bbplayer
                         _board[y, x].Facade.StrokeThickness = 1;
                     }
 
-                    _board[y, x].SetPiece(boardPiece, new Point(setX, setY), y, x);
+                    _board[y, x].SetPiece(closestMatch, new Point(setX, setY), y, x);
                 }
             }
-        }
-
-        private void RefreshBoard()
-        {
-            _unknownCount = 0;
-
-            var dc = CreateDC( "Display", null, null, IntPtr.Zero );
-
-            for ( int y = 0; y < 8; y++ )
-            {
-                for ( int x = 0; x < 8; x++ )
-                {
-                    int setX = _boardCalibration.X + (40*x);
-                    int setY = _boardCalibration.Y + (40*y);
-
-//                    SetCursorPos( setX, setY );
-//                    Thread.Sleep( 250 );
-
-                    //var dc = GetDC( IntPtr.Zero );
-                    //var dc = GetDCEx( IntPtr.Zero, IntPtr.Zero, DeviceContextValues.Window );
-
-                    
-
-                    var color = GetColorPointsFrom( dc, setX, setY );
-                    
-                    
-
-                    var boardPiece = BoardPiece.FindMatch( color );
-
-
-
-//                    if ( y == 0 && x == 0 )
-//                    {
-//                        var image = new BitmapImage();
-//                        image.BeginInit();
-//                        image.StreamSource = boardPiece.GetImageStream();
-//                        image.EndInit();
-//
-//                        image1.Source = image;
-//                    }
-
-                    _board[y, x].Facade.Fill = new SolidColorBrush( ConvertToMediaColor( color.Center ) );
-                    _board[y, x].Facade.ToolTip = boardPiece.Name;
-                    if ( boardPiece == BoardPiece.Unknown )
-                    {
-                        _unknownCount++;
-                        _board[y, x].Facade.Stroke = Brushes.Red;
-                        _board[y, x].Facade.StrokeThickness = 3;
-                    }
-                    else
-                    {
-                        _board[y, x].Facade.Stroke = Brushes.Black;
-                        _board[y, x].Facade.StrokeThickness = 1;                        
-                    }
-                    
-                    _board[y, x].SetPiece( boardPiece, new Point( setX, setY ), y, x );
-                }
-            }
-
-            DeleteDC( dc );
         }
 
         private void UseHypercube()
@@ -732,37 +678,87 @@ namespace bbplayer
         [return: MarshalAs( UnmanagedType.Bool )]
         private static extern bool RegisterHotKey( IntPtr hWnd, int id, uint fsModifiers, uint vk );
 
-        private void button1_Click(object sender, RoutedEventArgs e)
+        private Point highlightedPiece;
+
+        private void RectangleOnMouseUp(object sender, MouseButtonEventArgs e)
         {
+            var rectangle = (System.Windows.Shapes.Rectangle) sender;
+            var name = rectangle.Name;
+            var rectangleX = Convert.ToInt32(name.Substring(2, 1)) - 1;
+            var rectangleY = Convert.ToInt32(name.Substring(1, 1)) - 1;
+
+            this.highlightedPiece = new Point(rectangleX, rectangleY);
+
+            imageHighlight.Stroke = Brushes.Red;
+            imageHighlight.StrokeThickness = 3;
+            imageHighlight.Fill = Brushes.Transparent;
+            imageHighlight.Visibility = Visibility.Visible;
+
+
+            var bitmapTopLeftY = Canvas.GetTop(image1) + (rectangleY*40);
+            var bitmapTopLeftX = Canvas.GetLeft(this.image1) + (rectangleX*40);
+
+            Canvas.SetTop(imageHighlight, bitmapTopLeftY);
+            Canvas.SetLeft(imageHighlight, bitmapTopLeftX);
+
+            var averageColor = ColorUtility.GetAveragePieceColor(_bitmap, rectangleX*40, rectangleY*40);
+            var matches = BoardPiece.FindMatches(averageColor);
+
+            var closestMatch = matches.GetClosestMatch();
+
             listBox1.Items.Clear();
-        }
-
-        private void button2_Click(object sender, RoutedEventArgs e)
-        {
-            listBox1.Items.Add( new Point( Convert.ToInt32( xCoord.Text ), Convert.ToInt32( yCoord.Text ) ) );
-        }
-
-        private void button3_Click(object sender, RoutedEventArgs e)
-        {
-            IList<ColorPoints> colorPoints = new List<ColorPoints>();
-
-            foreach ( object item in listBox1.Items )
+            foreach (var match in matches)
             {
-                var point = (Point) item;
-
-                int setX = _boardCalibration.X + (40*point.X);
-                int setY = _boardCalibration.Y + (40*point.Y);
-
-                ColorPoints color = GetColorPointsFrom( GetDC( IntPtr.Zero ), setX, setY );
-                colorPoints.Add( color );
+                listBox1.Items.Add(new ListBoxMatch(match, closestMatch.BoardPiece.Name == match.BoardPiece.Name));
             }
-
-            var averageCenter = BoardPiece.GetAverageColor( colorPoints.Select( p => p.Center ).ToList() );
-
-            avgLuminance.Background = new SolidColorBrush( ConvertToMediaColor( averageCenter ) );
-            avgLuminance.Content = string.Format( "h:{0}, s:{1}, b:{2}", averageCenter.GetHue(), averageCenter.GetSaturation(), averageCenter.GetBrightness() );
         }
 
+        private void ListBox1_OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var mp = (System.Windows.Controls.ListBox) sender;
+            var item = (ListBoxMatch) mp.SelectedItem;
+            if (item == null)
+                return;
+
+            rectSourcePiece.Fill = new ImageBrush(this.BitmapToImageSource(item.MatchPair.BoardPiece.GetImage(), ImageFormat.Bmp));
+
+            var piecePoint = new Point(this.highlightedPiece.X*40, this.highlightedPiece.Y*40);
+            var boardPiece = this._bitmap.Clone(
+                new Rectangle(piecePoint, new System.Drawing.Size(40, 40)),
+                PixelFormat.DontCare);
+
+            rectBoardPiece.Fill = new ImageBrush(this.BitmapToImageSource(boardPiece, ImageFormat.Bmp));
+
+            lblColorDist.Content = item.MatchPair.Weight.First.ToString("##.####");
+            lblLuminanceDist.Content = item.MatchPair.Weight.Second.ToString("##.####");
+
+            rectBoardPieceAverageColor.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceColor(boardPiece, 0, 0)));
+            rectSourcePieceAverageColor.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceColor(item.MatchPair.BoardPiece.GetImage(), 0, 0)));
+
+            rectBoardPieceAverageLuminance.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceHSL(boardPiece, 0, 0)));
+            rectSourcePieceAverageLuminance.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceHSL(item.MatchPair.BoardPiece.GetImage(), 0, 0)));
+        }
     }
 
+    class ListBoxMatch
+    {
+        private BoardPiece.MatchPair pair;
+        private readonly bool isClosest;
+
+        public ListBoxMatch(BoardPiece.MatchPair pair, bool isClosest)
+        {
+            this.pair = pair;
+            this.isClosest = isClosest;
+        }
+
+        public string IsClosest
+        {
+            get { return (this.isClosest) ? "*" : ""; }
+        }
+
+        public BoardPiece.MatchPair MatchPair
+        {
+            get { return this.pair; }
+        }
+    }
 }

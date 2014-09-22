@@ -96,6 +96,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ColorUtility.cs" />
+    <Compile Include="Lab.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -172,6 +174,16 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="images\fire_blue-diamond.bmp" />
+    <EmbeddedResource Include="images\fire_gray-rock.bmp" />
+    <EmbeddedResource Include="images\fire_green-sphere.bmp" />
+    <EmbeddedResource Include="images\fire_orange-decohedron.bmp" />
+    <EmbeddedResource Include="images\fire_purple-triangle.bmp" />
+    <EmbeddedResource Include="images\fire_red-square.bmp" />
+    <EmbeddedResource Include="images\fire_yellow-square.bmp" />
+    <EmbeddedResource Include="images\multiplier_purple-triangle.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
