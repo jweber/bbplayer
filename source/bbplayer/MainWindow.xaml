@@ -1,7 +1,7 @@
 ﻿<Window x:Class="bbplayer.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="bbplayer" Height="616" Width="788">
+    Title="bbplayer" Height="648" Width="788">
     <Grid>
         <StatusBar Height="23" x:Name="statusBar1" VerticalAlignment="Bottom">
             <TextBlock x:Name="cursorXStatus"><Run Text="X:"/></TextBlock>
@@ -76,7 +76,7 @@
         <Rectangle MouseUp="RectangleOnMouseUp" Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,222,0,0" x:Name="b86" Stroke="Black" VerticalAlignment="Top" Width="24" />
         <Rectangle MouseUp="RectangleOnMouseUp" Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,222,0,0" x:Name="b87" Stroke="Black" VerticalAlignment="Top" Width="24" />
         <Rectangle MouseUp="RectangleOnMouseUp" Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,222,0,0" x:Name="b88" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Label HorizontalAlignment="Right" Margin="0,522,21,0" x:Name="solutionDescription" Width="209" Height="25" VerticalAlignment="Top"/>
+        <Label HorizontalAlignment="Right" Margin="0,340,307,0" x:Name="solutionDescription" Width="209" Height="25" VerticalAlignment="Top"/>
         <ListBox Margin="12,260,0,29" x:Name="listBox1" PreviewMouseUp="ListBox1_OnPreviewMouseUp" HorizontalAlignment="Left" Width="234">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -100,8 +100,8 @@
                 <DropShadowEffect ShadowDepth="0" Color="Red"/>
             </Label.Effect>
         </Label>
-        <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="344" Margin="264,12,0,0" VerticalAlignment="Top" Width="463">
-            <Image x:Name="image1" Stretch="None" Width="320" Height="320" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="10" />
+        <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="323" Margin="264,12,0,0" VerticalAlignment="Top" Width="463">
+            <Image x:Name="image1" Stretch="None" Width="320" Height="320" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="1" Canvas.Top="1" />
             <Rectangle Visibility="Hidden" x:Name="imageHighlight" Fill="Transparent" HorizontalAlignment="Left" Height="40" Stroke="Red" StrokeThickness="1" VerticalAlignment="Top" Width="40" Canvas.Left="10" Canvas.Top="422">
                 <Rectangle.Effect>
                     <DropShadowEffect Color="Red" BlurRadius="5" ShadowDepth="0"/>
@@ -130,5 +130,11 @@
         <Rectangle x:Name="rectBoardPieceAverageLuminance" ToolTip="Average luminance" Fill="Transparent" HorizontalAlignment="Left" Height="20" Margin="251,530,0,0" Stroke="Transparent" VerticalAlignment="Top" Width="40"/>
         <Rectangle x:Name="rectSourcePieceAverageColor" ToolTip="Average color" Fill="Transparent" HorizontalAlignment="Left" Height="20" Margin="295,505,0,0" Stroke="Transparent" VerticalAlignment="Top" Width="40"/>
         <Rectangle x:Name="rectSourcePieceAverageLuminance" ToolTip="Average luminance" Fill="Transparent" HorizontalAlignment="Left" Height="20" Margin="295,530,0,0" Stroke="Transparent" VerticalAlignment="Top" Width="40"/>
+        <Canvas HorizontalAlignment="Left" Height="75" Margin="349,513,0,0" VerticalAlignment="Top" Width="400">
+            <Polygon Name="polyPieceHistogram" Stretch="Fill" Fill="Black" Opacity="0.8" Height="65" Width="200" />
+            <Polygon Name="polySourceHistogram" Stretch="Fill" Fill="Black" Opacity="0.8" Height="65" Width="200" Canvas.Left="200" />
+        </Canvas>
+        <Label Content="Histogram dist:" HorizontalAlignment="Left" Margin="340,492,0,0" VerticalAlignment="Top" FontSize="10"/>
+        <Label x:Name="lblHistogramDist" Content="" HorizontalAlignment="Left" Margin="424,492,0,0" VerticalAlignment="Top" FontSize="10"/>
     </Grid>
 </Window>

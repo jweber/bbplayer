@@ -17,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using Brush=System.Drawing.Brush;
 using Brushes=System.Windows.Media.Brushes;
@@ -24,6 +25,7 @@ using Color=System.Windows.Media.Color;
 using KeyEventArgs=System.Windows.Input.KeyEventArgs;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 using Point=System.Drawing.Point;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace bbplayer
 {
@@ -229,7 +231,7 @@ namespace bbplayer
 
             if ( e.Key == Key.H )
             {
-                UseHypercube();
+                //UseHypercube();
             }
           
 
@@ -368,12 +370,15 @@ namespace bbplayer
 
                     //Thread.Sleep(500);
 
-                    var averageColor = ColorUtility.GetAveragePieceColor(_bitmap, setX, setY);
+                    // Use average color
+//                    var averageColor = ColorUtility.GetAveragePieceColor(_bitmap, setX, setY);                   
+//                    var matches = BoardPiece.FindMatches(averageColor);
+
+                    var matches = BoardPiece.FindMatches(_bitmap, setX, setY);
                     
-                    var matches = BoardPiece.FindMatches(averageColor);
                     var closestMatch = matches.GetClosestMatch().BoardPiece;
 
-                    _board[y, x].Facade.Fill = new SolidColorBrush(ConvertToMediaColor(averageColor));
+                    //_board[y, x].Facade.Fill = new SolidColorBrush(ConvertToMediaColor(averageColor));
                     _board[y, x].Facade.ToolTip = closestMatch.Name;
 
                     if (closestMatch.GetImage() != null)
@@ -397,52 +402,52 @@ namespace bbplayer
             }
         }
 
-        private void UseHypercube()
-        {
-            var ev = FindHypercube();
-            if ( ev.HyperCubePosition == null )
-            {
-                return;
-            }
-
-            var top = _board.TopOf( ev.HyperCubePosition );
-            var right = _board.RightOf( ev.HyperCubePosition );
-            var bottom = _board.BottomOf( ev.HyperCubePosition );
-            var left = _board.LeftOf( ev.HyperCubePosition );
-
-            Tuple<Surround,int>[] weights = new[]
-            {
-                new Tuple<Surround, int>( Surround.Top, ( top == null ) ? 0 : ev.RootBoardPieceWeights[top.Piece.RootBoardPiece] ),
-                new Tuple<Surround, int>( Surround.Right, ( right == null ) ? 0 : ev.RootBoardPieceWeights[right.Piece.RootBoardPiece] ),
-                new Tuple<Surround, int>( Surround.Bottom, ( bottom == null ) ? 0 : ev.RootBoardPieceWeights[bottom.Piece.RootBoardPiece] ),
-                new Tuple<Surround, int>( Surround.Left, ( left == null ) ? 0 : ev.RootBoardPieceWeights[left.Piece.RootBoardPiece] ),
-            };
-
-            var moveHyperCube = weights.OrderByDescending( m => m.Second ).Select( m => m.First ).First();
-
-            Point moveTo = new Point();
-            switch ( moveHyperCube )
-            {
-                case Surround.Top:
-                    moveTo = new Point( ev.HyperCubePosition.ArrayPosition.X, ev.HyperCubePosition.ArrayPosition.Y - 1 );
-                    break;
-
-                case Surround.Right:
-                    moveTo = new Point( ev.HyperCubePosition.ArrayPosition.X + 1, ev.HyperCubePosition.ArrayPosition.Y );
-                    break;
-
-                case Surround.Bottom:
-                    moveTo = new Point( ev.HyperCubePosition.ArrayPosition.X, ev.HyperCubePosition.ArrayPosition.Y + 1 );
-                    break;
-
-                case Surround.Left:
-                    moveTo = new Point( ev.HyperCubePosition.ArrayPosition.X - 1, ev.HyperCubePosition.ArrayPosition.Y );
-                    break;
-            }
-
-            var solution = new Solution( ev.HyperCubePosition.ArrayPosition, moveTo );
-            ApplySolution( solution );
-        }
+//        private void UseHypercube()
+//        {
+//            var ev = FindHypercube();
+//            if ( ev.HyperCubePosition == null )
+//            {
+//                return;
+//            }
+//
+//            var top = _board.TopOf( ev.HyperCubePosition );
+//            var right = _board.RightOf( ev.HyperCubePosition );
+//            var bottom = _board.BottomOf( ev.HyperCubePosition );
+//            var left = _board.LeftOf( ev.HyperCubePosition );
+//
+//            Tuple<Surround,int>[] weights = new[]
+//            {
+//                new Tuple<Surround, int>( Surround.Top, ( top == null ) ? 0 : ev.RootBoardPieceWeights[top.Piece.RootBoardPiece] ),
+//                new Tuple<Surround, int>( Surround.Right, ( right == null ) ? 0 : ev.RootBoardPieceWeights[right.Piece.RootBoardPiece] ),
+//                new Tuple<Surround, int>( Surround.Bottom, ( bottom == null ) ? 0 : ev.RootBoardPieceWeights[bottom.Piece.RootBoardPiece] ),
+//                new Tuple<Surround, int>( Surround.Left, ( left == null ) ? 0 : ev.RootBoardPieceWeights[left.Piece.RootBoardPiece] ),
+//            };
+//
+//            var moveHyperCube = weights.OrderByDescending( m => m.Second ).Select( m => m.First ).First();
+//
+//            Point moveTo = new Point();
+//            switch ( moveHyperCube )
+//            {
+//                case Surround.Top:
+//                    moveTo = new Point( ev.HyperCubePosition.ArrayPosition.X, ev.HyperCubePosition.ArrayPosition.Y - 1 );
+//                    break;
+//
+//                case Surround.Right:
+//                    moveTo = new Point( ev.HyperCubePosition.ArrayPosition.X + 1, ev.HyperCubePosition.ArrayPosition.Y );
+//                    break;
+//
+//                case Surround.Bottom:
+//                    moveTo = new Point( ev.HyperCubePosition.ArrayPosition.X, ev.HyperCubePosition.ArrayPosition.Y + 1 );
+//                    break;
+//
+//                case Surround.Left:
+//                    moveTo = new Point( ev.HyperCubePosition.ArrayPosition.X - 1, ev.HyperCubePosition.ArrayPosition.Y );
+//                    break;
+//            }
+//
+//            var solution = new Solution( ev.HyperCubePosition.ArrayPosition, moveTo );
+//            ApplySolution( solution );
+//        }
 
         enum Surround
         {
@@ -453,44 +458,44 @@ namespace bbplayer
         }
 
 
-        private HyperCubeEvaluation FindHypercube()
-        {
-            HyperCubeEvaluation output = new HyperCubeEvaluation();
-
-            for ( int y = 0; y < 8; y++ )
-            {
-                for ( int x = 0; x < 8; x++ )
-                {
-                    int setX = _boardCalibration.X + ( 40 * x );
-                    int setY = _boardCalibration.Y + ( 40 * y );
-
-                    var dc = CreateDC( "Display", null, null, IntPtr.Zero );
-
-                    var color = GetColorPointsFrom( dc, setX, setY );
-
-                    DeleteDC( dc );
-
-                    var boardPiece = BoardPiece.FindMatch( color );
-                    
-                    if ( boardPiece == BoardPiece.HyperCube )
-                    {
-                        output.HyperCubePosition = new BoardPosition();
-                        output.HyperCubePosition.SetPiece( boardPiece, new Point( setX, setY ), y, x );
-                    }
-
-                    if ( ! output.RootBoardPieceWeights.ContainsKey( boardPiece.RootBoardPiece ) )
-                    {
-                        output.RootBoardPieceWeights[boardPiece.RootBoardPiece] = boardPiece.Weight;
-                    }
-                    else
-                    {
-                        output.RootBoardPieceWeights[boardPiece.RootBoardPiece] += boardPiece.Weight;
-                    }
-                }
-            }
-
-            return output;
-        }
+//        private HyperCubeEvaluation FindHypercube()
+//        {
+//            HyperCubeEvaluation output = new HyperCubeEvaluation();
+//
+//            for ( int y = 0; y < 8; y++ )
+//            {
+//                for ( int x = 0; x < 8; x++ )
+//                {
+//                    int setX = _boardCalibration.X + ( 40 * x );
+//                    int setY = _boardCalibration.Y + ( 40 * y );
+//
+//                    var dc = CreateDC( "Display", null, null, IntPtr.Zero );
+//
+//                    var color = GetColorPointsFrom( dc, setX, setY );
+//
+//                    DeleteDC( dc );
+//
+//                    var boardPiece = BoardPiece.FindMatch( color );
+//                    
+//                    if ( boardPiece == BoardPiece.HyperCube )
+//                    {
+//                        output.HyperCubePosition = new BoardPosition();
+//                        output.HyperCubePosition.SetPiece( boardPiece, new Point( setX, setY ), y, x );
+//                    }
+//
+//                    if ( ! output.RootBoardPieceWeights.ContainsKey( boardPiece.RootBoardPiece ) )
+//                    {
+//                        output.RootBoardPieceWeights[boardPiece.RootBoardPiece] = boardPiece.Weight;
+//                    }
+//                    else
+//                    {
+//                        output.RootBoardPieceWeights[boardPiece.RootBoardPiece] += boardPiece.Weight;
+//                    }
+//                }
+//            }
+//
+//            return output;
+//        }
 
         class HyperCubeEvaluation
         {
@@ -741,8 +746,7 @@ namespace bbplayer
             Canvas.SetTop(imageHighlight, bitmapTopLeftY);
             Canvas.SetLeft(imageHighlight, bitmapTopLeftX);
 
-            var averageColor = ColorUtility.GetAveragePieceColor(_bitmap, rectangleX*40, rectangleY*40);
-            var matches = BoardPiece.FindMatches(averageColor);
+            var matches = BoardPiece.FindMatches(_bitmap, rectangleX, rectangleY);
 
             var closestMatch = matches.GetClosestMatch();
 
@@ -766,7 +770,7 @@ namespace bbplayer
         {
             var mp = (System.Windows.Controls.ListBox) sender;
             var item = (ListBoxMatch) mp.SelectedItem;
-            if (item == null)
+            if (item == null || item.MatchPair.BoardPiece.Name == "Unknown")
                 return;
 
             rectSourcePiece.Fill = new ImageBrush(this.BitmapToImageSource(item.MatchPair.BoardPiece.GetImage(), ImageFormat.Bmp));
@@ -778,14 +782,38 @@ namespace bbplayer
 
             rectBoardPiece.Fill = new ImageBrush(this.BitmapToImageSource(boardPiece, ImageFormat.Bmp));
 
-            lblColorDist.Content = item.MatchPair.Weight.First.ToString("##.####");
-            lblLuminanceDist.Content = item.MatchPair.Weight.Second.ToString("##.####");
+            lblColorDist.Content = item.MatchPair.Weight.ColorDistance.ToString("##.####");
+            lblLuminanceDist.Content = item.MatchPair.Weight.LuminanceDistance.ToString("##.####");
 
             rectBoardPieceAverageColor.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceColor(boardPiece, 0, 0)));
-            rectSourcePieceAverageColor.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceColor(item.MatchPair.BoardPiece.GetImage(), 0, 0)));
+            rectBoardPieceAverageLuminance.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceLuminance(boardPiece, 0, 0)));
 
-            rectBoardPieceAverageLuminance.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceHSL(boardPiece, 0, 0)));
-            rectSourcePieceAverageLuminance.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceHSL(item.MatchPair.BoardPiece.GetImage(), 0, 0)));
+            rectSourcePieceAverageColor.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceColor(item.MatchPair.BoardPiece.GetImage(), 0, 0)));
+            rectSourcePieceAverageLuminance.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceLuminance(item.MatchPair.BoardPiece.GetImage(), 0, 0)));
+
+            // histograms
+            var sourceHistogram = ColorUtility.GetLuminanceHistogram(item.MatchPair.BoardPiece.GetImage(), 0, 0);
+            polySourceHistogram.Points = this.GetHistogramPointCollection(sourceHistogram);
+
+            var pieceHistogram = ColorUtility.GetLuminanceHistogram(boardPiece, 0, 0);
+            polyPieceHistogram.Points = this.GetHistogramPointCollection(pieceHistogram);
+
+            var histogramDistance = ColorUtility.GetHistogramDistance(sourceHistogram, pieceHistogram);
+            lblHistogramDist.Content = histogramDistance.ToString("##.####");
+        }
+
+        private PointCollection GetHistogramPointCollection(int[] histogram)
+        {
+            int max = histogram.Max();
+            var points = new PointCollection();
+            points.Add(new System.Windows.Point(0, max));
+            for (int i = 0; i < histogram.Length; i++)
+            {
+                points.Add(new System.Windows.Point(i, max - histogram[i]));
+            }
+            points.Add(new System.Windows.Point(histogram.Length - 1, max));
+
+            return points;
         }
     }
 

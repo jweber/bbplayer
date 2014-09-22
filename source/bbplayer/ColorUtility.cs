@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using AForge.Imaging;
 
 namespace bbplayer
 {
@@ -58,7 +59,54 @@ namespace bbplayer
 
         }
 
-        public static Color GetAveragePieceHSL(Bitmap bitmap, int pieceTopLeftX, int pieceTopLeftY)
+        public static int[] GetLuminanceHistogram(Bitmap bitmap, int pieceTopLeftX, int pieceTopLeftY)
+        {
+            var mask = new byte[bitmap.Height, bitmap.Width];
+            
+            for (int x = pieceTopLeftX; x < pieceTopLeftX + Math.Min(bitmap.Width, 40); x++)
+            {
+                for (int y = pieceTopLeftY; y < pieceTopLeftY + Math.Min(bitmap.Height, 40); y++)
+                {
+                    mask[y, x] = 1;
+                }
+            }
+
+            var st = new ImageStatisticsHSL(bitmap, mask);
+            int[] luminanceValues = st.LuminanceWithoutBlack.Values;
+            return luminanceValues;
+        }
+
+        public static double GetHistogramDistance(int[] first, int[] second)
+        {
+            double result = 0;
+            for (int i = 0; i < first.Length; i++)
+            {
+                result += (first[i] - second[i])*(first[i] - second[i]);
+            }
+
+            result = Math.Sqrt(result);
+            return result;
+        }
+
+        public static int[] SmoothHistogram(int[] originalValues)
+        {
+            int[] smoothedValues = new int[originalValues.Length];
+            double[] mask = new double[] { 0.25, 0.5, 0.25 };
+
+            for (int bin = 1; bin < originalValues.Length - 1; bin++)
+            {
+                double smoothedValue = 0;
+                for (int i = 0; i < mask.Length; i++)
+                {
+                    smoothedValue += originalValues[bin - 1 + i]*mask[i];
+                }
+                smoothedValues[bin] = (int) smoothedValue;
+            }
+
+            return smoothedValues;
+        }
+
+        public static Color GetAveragePieceLuminance(Bitmap bitmap, int pieceTopLeftX, int pieceTopLeftY)
         {
             float totalH = 0,
                   totalS = 0,
