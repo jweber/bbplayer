@@ -21,9 +21,9 @@ namespace bbplayer
                 height = bitmap.Height;
 
             int skippedPixels = 0;
-            for (int bbY = pieceTopLeftY; bbY < pieceTopLeftY + height; bbY++)
+            for (int bbY = pieceTopLeftY + 2; bbY < pieceTopLeftY + height - 10; bbY++)
             {
-                for (int bbX = pieceTopLeftX; bbX < pieceTopLeftX + width; bbX++)
+                for (int bbX = pieceTopLeftX + 10; bbX < pieceTopLeftX + width - 10; bbX++)
                 {
                     Color pixelColor = bitmap.GetPixel(bbX, bbY);
                     
@@ -74,9 +74,9 @@ namespace bbplayer
                 height = bitmap.Height;
 
             int skippedPixels = 0;
-            for (int bbY = pieceTopLeftY; bbY < pieceTopLeftY + height; bbY++)
+            for (int bbY = pieceTopLeftY + 2; bbY < pieceTopLeftY + height - 10; bbY++)
             {
-                for (int bbX = pieceTopLeftX; bbX < pieceTopLeftX + width; bbX++)
+                for (int bbX = pieceTopLeftX + 10; bbX < pieceTopLeftX + width - 10; bbX++)
                 {
                     Color pixelColor = bitmap.GetPixel(bbX, bbY);
 

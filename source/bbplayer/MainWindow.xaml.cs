@@ -43,10 +43,10 @@ namespace bbplayer
         {
             InitializeComponent();
 
-            var timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds( 100 );
-            timer.Tick += CapturePixelColorUnderCursor;
-            timer.Start();
+//            var timer = new DispatcherTimer();
+//            timer.Interval = TimeSpan.FromMilliseconds( 100 );
+//            timer.Tick += CapturePixelColorUnderCursor;
+//            timer.Start();
 
             _board = new Board();
             InitializeBoard();
@@ -158,6 +158,18 @@ namespace bbplayer
                 _boardBottomRight = new Point(cursor.X + (40*8), cursor.Y + (40*8));
 
                 this.RefreshBoardFromBitmap();
+
+                var timer = new DispatcherTimer();
+                timer.Interval = TimeSpan.FromMilliseconds( 100 );
+                timer.Tick += delegate
+                {
+                    this.RefreshBoardFromBitmap();
+
+                    var solution = this.FindSolution();
+                    this.HighlightSolution(solution);
+
+                };
+                timer.Start();
             }
 
             if ( e.Key == Key.D2 )
@@ -167,7 +179,8 @@ namespace bbplayer
 
             if ( e.Key == Key.D3 )
             {
-                FindAndApplySolution();
+                var solution = this.FindSolution(chooseRandom: false);
+                this.ApplySolution(solution);
             }
 
             if ( e.Key == Key.D4 )
@@ -185,7 +198,11 @@ namespace bbplayer
                 }
 
                 Thread.Sleep( 100 );
-                FindAndApplySolution();
+                var solution = this.FindSolution(chooseRandom: false);
+                this.ApplySolution(solution);
+
+                Thread.Sleep( 250 );
+                this.RefreshBoardFromBitmap();
             }
             
             if ( e.Key == Key.D5 )
@@ -203,7 +220,11 @@ namespace bbplayer
                 }
 
                 Thread.Sleep( 100 );
-                FindAndApplySolution(chooseRandom: true);
+                var solution = this.FindSolution(chooseRandom: true);
+                this.ApplySolution(solution);
+
+                Thread.Sleep( 250 );
+                this.RefreshBoardFromBitmap();
             }
 
             if ( e.Key == Key.H )
@@ -233,41 +254,60 @@ namespace bbplayer
         }
 
         private static Random random = new Random();
-        private void FindAndApplySolution(bool chooseRandom = false)
+
+        private Solution FindSolution(bool chooseRandom = false)
         {
             var sf = new NaiveBestSolutionFinder( _board );
             var sol = sf.FindSolutions();
 
-            Point currentPos;
-            GetCursorPos( out currentPos );
-
-            if ( sol != null )
+            if (sol == null)
             {
-                if (chooseRandom)
-                {
-                    int randomSolution = random.Next(0, sol.Length - 1);
-                    this.ApplySolution(sol[randomSolution]);
-                }
-                else
-                {
-                    ApplySolution(sol.First());
-                }
+                this.solutionDescription.Content = "No solution found";
+                return null;
+            }
+
+            Solution solution;
+
+            if (chooseRandom)
+            {
+                int randomSolution = random.Next(0, sol.Length - 1);
+                solution = sol[randomSolution];
             }
             else
             {
-                solution.Content = "No solution found";
+                solution = sol.First();
             }
+
+            this.solutionDescription.Content = string.Format("Solution: (weight:{4}) x:{0}, y:{1} to x{2}, y:{3}",
+                solution.ArrayPosition1.X,
+                solution.ArrayPosition1.Y,
+                solution.ArrayPosition2.X,
+                solution.ArrayPosition2.Y,
+                solution.Weight);
+
+            return solution;
+        }
+
+        private void HighlightSolution(Solution sol)
+        {
+            rectSolutionSource.Visibility = Visibility.Visible;
+            rectSolutionDest.Visibility = Visibility.Visible;
+
+            var sourceTopLeftY = Canvas.GetTop(this.image1) + (sol.ArrayPosition1.Y*40);
+            var sourceTopLeftX = Canvas.GetLeft(this.image1) + (sol.ArrayPosition1.X*40);
+            
+            var destTopLeftY = Canvas.GetTop(this.image1) + (sol.ArrayPosition2.Y*40);
+            var destTopLeftX = Canvas.GetLeft(this.image1) + (sol.ArrayPosition2.X*40);
+
+            Canvas.SetTop(rectSolutionSource, sourceTopLeftY);
+            Canvas.SetLeft(rectSolutionSource, sourceTopLeftX);
+
+            Canvas.SetTop(rectSolutionDest, destTopLeftY);
+            Canvas.SetLeft(rectSolutionDest, destTopLeftX);
         }
 
         private void ApplySolution( Solution sol )
         {
-            solution.Content = string.Format( "Solution: (weight:{4}) x:{0}, y:{1} to x{2}, y:{3}",
-                                              sol.ArrayPosition1.X,
-                                              sol.ArrayPosition1.Y,
-                                              sol.ArrayPosition2.X,
-                                              sol.ArrayPosition2.Y,
-                                              sol.Weight );
-
             SetCursorPos( _boardTopLeft.X + 20 + ( sol.ArrayPosition1.X * 40 ),
                           _boardTopLeft.Y + 20 + ( sol.ArrayPosition1.Y * 40 ) );
 
@@ -707,10 +747,19 @@ namespace bbplayer
             var closestMatch = matches.GetClosestMatch();
 
             listBox1.Items.Clear();
+
             foreach (var match in matches)
             {
-                listBox1.Items.Add(new ListBoxMatch(match, closestMatch.BoardPiece.Name == match.BoardPiece.Name));
+                bool isClosest = closestMatch.BoardPiece.Name == match.BoardPiece.Name;
+                var listBoxMatch = new ListBoxMatch(match, isClosest);
+                
+                listBox1.Items.Add(listBoxMatch);
+
+                if (isClosest)
+                    listBox1.SelectedItem = listBoxMatch;
             }
+
+            this.ListBox1_OnPreviewMouseUp(listBox1, null);
         }
 
         private void ListBox1_OnPreviewMouseUp(object sender, MouseButtonEventArgs e)

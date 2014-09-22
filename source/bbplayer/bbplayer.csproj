@@ -179,7 +179,7 @@
     <EmbeddedResource Include="images\fire_blue-diamond.bmp" />
     <EmbeddedResource Include="images\fire_gray-rock.bmp" />
     <EmbeddedResource Include="images\fire_green-sphere.bmp" />
-    <EmbeddedResource Include="images\fire_orange-decohedron.bmp" />
+    <EmbeddedResource Include="images\fire_orange-decahedron.bmp" />
     <EmbeddedResource Include="images\fire_purple-triangle.bmp" />
     <EmbeddedResource Include="images\fire_red-square.bmp" />
     <EmbeddedResource Include="images\fire_yellow-square.bmp" />

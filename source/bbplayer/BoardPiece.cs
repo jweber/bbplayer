@@ -375,14 +375,14 @@ namespace bbplayer
         {
             //return matchPairs.OrderBy(m => m.Weight.First + m.Weight.Second).First();
 
-            if (matchPairs.Any(m => m.Weight.First < 3))
-                return matchPairs.First(m => m.Weight.First < 3);
+            if (matchPairs.Any(m => m.Weight.First < 6))
+                return matchPairs.First(m => m.Weight.First < 6);
             
-            if (matchPairs.Any(m => m.Weight.Second < 3))
-                return matchPairs.First(m => m.Weight.Second < 3);
+            if (matchPairs.Any(m => m.Weight.Second < 6))
+                return matchPairs.First(m => m.Weight.Second < 6);
 
-            if (matchPairs.Any(m => m.Weight.First + m.Weight.Second < 10))
-                return matchPairs.First(m => m.Weight.First + m.Weight.Second < 10);
+            if (matchPairs.Any(m => m.Weight.First + m.Weight.Second < 15))
+                return matchPairs.First(m => m.Weight.First + m.Weight.Second < 15);
 
             return matchPairs
                 .OrderBy(m => m.Weight.First)

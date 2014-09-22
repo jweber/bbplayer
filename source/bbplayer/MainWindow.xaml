@@ -76,7 +76,7 @@
         <Rectangle MouseUp="RectangleOnMouseUp" Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,222,0,0" x:Name="b86" Stroke="Black" VerticalAlignment="Top" Width="24" />
         <Rectangle MouseUp="RectangleOnMouseUp" Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,222,0,0" x:Name="b87" Stroke="Black" VerticalAlignment="Top" Width="24" />
         <Rectangle MouseUp="RectangleOnMouseUp" Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,222,0,0" x:Name="b88" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Label HorizontalAlignment="Right" Margin="0,522,21,0" x:Name="solution" Width="209" Height="25" VerticalAlignment="Top"/>
+        <Label HorizontalAlignment="Right" Margin="0,522,21,0" x:Name="solutionDescription" Width="209" Height="25" VerticalAlignment="Top"/>
         <ListBox Margin="12,260,0,29" x:Name="listBox1" PreviewMouseUp="ListBox1_OnPreviewMouseUp" HorizontalAlignment="Left" Width="234">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -84,13 +84,13 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="10"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-<!--                            <ColumnDefinition Width="30"></ColumnDefinition>-->
-<!--                            <ColumnDefinition Width="30"></ColumnDefinition>-->
+                            <!--                            <ColumnDefinition Width="30"></ColumnDefinition>-->
+                            <!--                            <ColumnDefinition Width="30"></ColumnDefinition>-->
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="{Binding IsClosest}"></TextBlock>
                         <TextBlock Grid.Column="1" Text="{Binding MatchPair.BoardPiece.Name }"></TextBlock>
-<!--                        <TextBlock Grid.Column="2" Text="{Binding MatchPair.Weight.First }"></TextBlock>-->
-<!--                        <TextBlock Grid.Column="3" Text="{Binding MatchPair.Weight.Second }"></TextBlock>-->
+                        <!--                        <TextBlock Grid.Column="2" Text="{Binding MatchPair.Weight.First }"></TextBlock>-->
+                        <!--                        <TextBlock Grid.Column="3" Text="{Binding MatchPair.Weight.Second }"></TextBlock>-->
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -105,6 +105,16 @@
             <Rectangle Visibility="Hidden" x:Name="imageHighlight" Fill="Transparent" HorizontalAlignment="Left" Height="40" Stroke="Red" StrokeThickness="1" VerticalAlignment="Top" Width="40" Canvas.Left="10" Canvas.Top="422">
                 <Rectangle.Effect>
                     <DropShadowEffect Color="Red" BlurRadius="5" ShadowDepth="0"/>
+                </Rectangle.Effect>
+            </Rectangle>
+            <Rectangle x:Name="rectSolutionSource" Visibility="Hidden" Fill="Transparent" Height="40" Canvas.Left="335" Stroke="#FF00FF0C" StrokeThickness="1" Canvas.Top="56" Width="40">
+                <Rectangle.Effect>
+                    <DropShadowEffect ShadowDepth="0" Color="#FF17FF00"/>
+                </Rectangle.Effect>
+            </Rectangle>
+            <Rectangle x:Name="rectSolutionDest" Visibility="Hidden" Fill="Transparent" Height="40" Canvas.Left="375" Stroke="#FF00FF0C" StrokeThickness="1" Canvas.Top="56" Width="40">
+                <Rectangle.Effect>
+                    <DropShadowEffect ShadowDepth="0" Color="#FF17FF00"/>
                 </Rectangle.Effect>
             </Rectangle>
         </Canvas>
