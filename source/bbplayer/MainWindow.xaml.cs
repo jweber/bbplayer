@@ -164,7 +164,7 @@ namespace bbplayer
                     this.HighlightSolution(solution);
 
                 };
-                //timer.Start();
+                timer.Start();
             }
 
             if ( e.Key == Key.D2 )
@@ -183,7 +183,7 @@ namespace bbplayer
                 this.UpdateBoard();
 
                 int tryCounter = 0;
-                while (_unknownCount > 0)
+                while (this.unknownCount > 0)
                 {
                     this.UpdateBoard();
                     Thread.Sleep( 100 );
@@ -205,7 +205,7 @@ namespace bbplayer
                 this.UpdateBoard();
 
                 int tryCounter = 0;
-                while (_unknownCount > 0)
+                while (this.unknownCount > 0)
                 {
                     this.UpdateBoard();
                     Thread.Sleep( 100 );
@@ -275,7 +275,7 @@ namespace bbplayer
                 BitmapSizeOptions.FromEmptyOptions());
 
             imgBoardBitmap.Source = bitmapSource;
-            this.board.UpdateBoardImage(bitmap);
+            this.unknownCount = this.board.UpdateBoardImage(bitmap);
         }
 
         private Solution FindSolution(bool chooseRandom = false)
@@ -349,12 +349,7 @@ namespace bbplayer
             SetForegroundWindow(new WindowInteropHelper(this).Handle);       
         }
 
-        private int _unknownCount;
-        private int _refreshCount;
-
-
-
-
+        private int unknownCount;
 
 //        private void UseHypercube()
 //        {

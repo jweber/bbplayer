@@ -1,6 +1,8 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using Brushes = System.Drawing.Brushes;
 using Rectangle = System.Windows.Shapes.Rectangle;
@@ -19,15 +21,17 @@ namespace bbplayer
 
         public Bitmap BoardImage { get { return this.boardImage; } }
 
-        public void UpdateBoardImage(Bitmap bitmap)
+        public int UpdateBoardImage(Bitmap bitmap)
         {
             this.boardImage = bitmap;
-            this.RecalculateBoardPieces();
+            return this.RecalculateBoardPieces();
         }
 
-        private void RecalculateBoardPieces()
+        private int RecalculateBoardPieces()
         {
             int unknownCount = 0;
+
+            var tasks = new List<Task>();
 
             for (int y = 0; y < 8; y++)
             {
@@ -64,7 +68,7 @@ namespace bbplayer
                 }
             }
 
-            //return unknownCount;
+            return unknownCount;
         }
 
         public void SetFacade(Rectangle facade, int x, int y)

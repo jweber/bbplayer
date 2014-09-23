@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace bbplayer
 {
@@ -28,7 +30,7 @@ namespace bbplayer
         public Solution Solution6 { get; set; }
         public Solution Solution7 { get; set; }
 
-        public void AddSolutions( IList<Solution> solutions )
+        public void AddSolutions( ConcurrentBag<Solution> solutions )
         {
             solutions.Add( Solution1 );
             solutions.Add( Solution2 );
@@ -51,19 +53,28 @@ namespace bbplayer
 
         public Solution[] FindSolutions()
         {
-            List<Solution> solutions = new List<Solution>();
+            //var solutions = new List<Solution>();
+            var solutions = new ConcurrentBag<Solution>();
 
+            var tasks = new List<Task>();
             for ( int y = 7; y >= 0; y-- )
             {
                 for ( int x = 0; x < 8; x++ )
                 {
-                    var position = _board[y, x];
-                    MoveRightSolves( position ).AddSolutions( solutions );
-                    MoveLeftSolves( position ).AddSolutions( solutions );
-                    MoveUpSolves( position ).AddSolutions( solutions );
-                    MoveDownSolves( position ).AddSolutions( solutions );
+                    int y1 = y;
+                    int x1 = x;
+                    tasks.Add(Task.Run(() =>
+                    {
+                        var position = _board[y1, x1];
+                        MoveRightSolves(position).AddSolutions(solutions);
+                        MoveLeftSolves(position).AddSolutions(solutions);
+                        MoveUpSolves(position).AddSolutions(solutions);
+                        MoveDownSolves(position).AddSolutions(solutions);
+                    }));
                 }
             }
+
+            Task.WaitAll(tasks.ToArray());
 
             var orderedSolutions = solutions.OrderByDescending( s => s.Weight );
 
