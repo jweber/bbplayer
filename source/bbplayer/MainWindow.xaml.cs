@@ -1,25 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.AccessControl;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using Brush=System.Drawing.Brush;
 using Brushes=System.Windows.Media.Brushes;
 using Color=System.Windows.Media.Color;
 using KeyEventArgs=System.Windows.Input.KeyEventArgs;
@@ -34,101 +27,101 @@ namespace bbplayer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Point _mainWindow;
-        private Point _boardCalibration;
-        private Board _board;
-        private IntPtr _dc;
+        private static Random random = new Random();
 
-        private Point _boardTopLeft, _boardBottomRight;
+        private readonly Board board;
+
+        private Point 
+            boardTopLeft, 
+            boardBottomRight;
 
         public MainWindow()
         {
             InitializeComponent();
 
-//            var timer = new DispatcherTimer();
-//            timer.Interval = TimeSpan.FromMilliseconds( 100 );
-//            timer.Tick += CapturePixelColorUnderCursor;
-//            timer.Start();
+            var timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds( 100 );
+            timer.Tick += CapturePixelColorUnderCursor;
+            timer.Start();
 
-            _board = new Board();
-            InitializeBoard();
-
+            this.board = new Board();
+            this.InitializeBoard();
         }
 
 
         private void InitializeBoard()
         {
-            _board[0, 0] = new BoardPosition( b11 );
-            _board[0, 1] = new BoardPosition( b12 );
-            _board[0, 2] = new BoardPosition( b13 );
-            _board[0, 3] = new BoardPosition( b14 );
-            _board[0, 4] = new BoardPosition( b15 );
-            _board[0, 5] = new BoardPosition( b16 );
-            _board[0, 6] = new BoardPosition( b17 );
-            _board[0, 7] = new BoardPosition( b18 );
+            board[0, 0] = new BoardPosition(b11);
+            board[0, 1] = new BoardPosition(b12);
+            board[0, 2] = new BoardPosition(b13);
+            board[0, 3] = new BoardPosition(b14);
+            board[0, 4] = new BoardPosition(b15);
+            board[0, 5] = new BoardPosition(b16);
+            board[0, 6] = new BoardPosition(b17);
+            board[0, 7] = new BoardPosition(b18);
 
-            _board[1, 0] = new BoardPosition( b21 );
-            _board[1, 1] = new BoardPosition( b22 );
-            _board[1, 2] = new BoardPosition( b23 );
-            _board[1, 3] = new BoardPosition( b24 );
-            _board[1, 4] = new BoardPosition( b25 );
-            _board[1, 5] = new BoardPosition( b26 );
-            _board[1, 6] = new BoardPosition( b27 );
-            _board[1, 7] = new BoardPosition( b28 );
+            board[1, 0] = new BoardPosition(b21);
+            board[1, 1] = new BoardPosition(b22);
+            board[1, 2] = new BoardPosition(b23);
+            board[1, 3] = new BoardPosition(b24);
+            board[1, 4] = new BoardPosition(b25);
+            board[1, 5] = new BoardPosition(b26);
+            board[1, 6] = new BoardPosition(b27);
+            board[1, 7] = new BoardPosition(b28);
 
-            _board[2, 0] = new BoardPosition( b31 );
-            _board[2, 1] = new BoardPosition( b32 );
-            _board[2, 2] = new BoardPosition( b33 );
-            _board[2, 3] = new BoardPosition( b34 );
-            _board[2, 4] = new BoardPosition( b35 );
-            _board[2, 5] = new BoardPosition( b36 );
-            _board[2, 6] = new BoardPosition( b37 );
-            _board[2, 7] = new BoardPosition( b38 );
+            board[2, 0] = new BoardPosition(b31);
+            board[2, 1] = new BoardPosition(b32);
+            board[2, 2] = new BoardPosition(b33);
+            board[2, 3] = new BoardPosition(b34);
+            board[2, 4] = new BoardPosition(b35);
+            board[2, 5] = new BoardPosition(b36);
+            board[2, 6] = new BoardPosition(b37);
+            board[2, 7] = new BoardPosition(b38);
 
-            _board[3, 0] = new BoardPosition( b41 );
-            _board[3, 1] = new BoardPosition( b42 );
-            _board[3, 2] = new BoardPosition( b43 );
-            _board[3, 3] = new BoardPosition( b44 );
-            _board[3, 4] = new BoardPosition( b45 );
-            _board[3, 5] = new BoardPosition( b46 );
-            _board[3, 6] = new BoardPosition( b47 );
-            _board[3, 7] = new BoardPosition( b48 );
+            board[3, 0] = new BoardPosition(b41);
+            board[3, 1] = new BoardPosition(b42);
+            board[3, 2] = new BoardPosition(b43);
+            board[3, 3] = new BoardPosition(b44);
+            board[3, 4] = new BoardPosition(b45);
+            board[3, 5] = new BoardPosition(b46);
+            board[3, 6] = new BoardPosition(b47);
+            board[3, 7] = new BoardPosition(b48);
 
-            _board[4, 0] = new BoardPosition( b51 );
-            _board[4, 1] = new BoardPosition( b52 );
-            _board[4, 2] = new BoardPosition( b53 );
-            _board[4, 3] = new BoardPosition( b54 );
-            _board[4, 4] = new BoardPosition( b55 );
-            _board[4, 5] = new BoardPosition( b56 );
-            _board[4, 6] = new BoardPosition( b57 );
-            _board[4, 7] = new BoardPosition( b58 );
+            board[4, 0] = new BoardPosition(b51);
+            board[4, 1] = new BoardPosition(b52);
+            board[4, 2] = new BoardPosition(b53);
+            board[4, 3] = new BoardPosition(b54);
+            board[4, 4] = new BoardPosition(b55);
+            board[4, 5] = new BoardPosition(b56);
+            board[4, 6] = new BoardPosition(b57);
+            board[4, 7] = new BoardPosition(b58);
 
-            _board[5, 0] = new BoardPosition( b61 );
-            _board[5, 1] = new BoardPosition( b62 );
-            _board[5, 2] = new BoardPosition( b63 );
-            _board[5, 3] = new BoardPosition( b64 );
-            _board[5, 4] = new BoardPosition( b65 );
-            _board[5, 5] = new BoardPosition( b66 );
-            _board[5, 6] = new BoardPosition( b67 );
-            _board[5, 7] = new BoardPosition( b68 );
+            board[5, 0] = new BoardPosition(b61);
+            board[5, 1] = new BoardPosition(b62);
+            board[5, 2] = new BoardPosition(b63);
+            board[5, 3] = new BoardPosition(b64);
+            board[5, 4] = new BoardPosition(b65);
+            board[5, 5] = new BoardPosition(b66);
+            board[5, 6] = new BoardPosition(b67);
+            board[5, 7] = new BoardPosition(b68);
 
-            _board[6, 0] = new BoardPosition( b71 );
-            _board[6, 1] = new BoardPosition( b72 );
-            _board[6, 2] = new BoardPosition( b73 );
-            _board[6, 3] = new BoardPosition( b74 );
-            _board[6, 4] = new BoardPosition( b75 );
-            _board[6, 5] = new BoardPosition( b76 );
-            _board[6, 6] = new BoardPosition( b77 );
-            _board[6, 7] = new BoardPosition( b78 );
+            board[6, 0] = new BoardPosition(b71);
+            board[6, 1] = new BoardPosition(b72);
+            board[6, 2] = new BoardPosition(b73);
+            board[6, 3] = new BoardPosition(b74);
+            board[6, 4] = new BoardPosition(b75);
+            board[6, 5] = new BoardPosition(b76);
+            board[6, 6] = new BoardPosition(b77);
+            board[6, 7] = new BoardPosition(b78);
 
-            _board[7, 0] = new BoardPosition( b81 );
-            _board[7, 1] = new BoardPosition( b82 );
-            _board[7, 2] = new BoardPosition( b83 );
-            _board[7, 3] = new BoardPosition( b84 );
-            _board[7, 4] = new BoardPosition( b85 );
-            _board[7, 5] = new BoardPosition( b86 );
-            _board[7, 6] = new BoardPosition( b87 );
-            _board[7, 7] = new BoardPosition( b88 );
+            board[7, 0] = new BoardPosition(b81);
+            board[7, 1] = new BoardPosition(b82);
+            board[7, 2] = new BoardPosition(b83);
+            board[7, 3] = new BoardPosition(b84);
+            board[7, 4] = new BoardPosition(b85);
+            board[7, 5] = new BoardPosition(b86);
+            board[7, 6] = new BoardPosition(b87);
+            board[7, 7] = new BoardPosition(b88);
         }
 
 //        private byte[] ImageToByteArray(Image image)
@@ -148,7 +141,7 @@ namespace bbplayer
 //            return bm;
 //        }
 
-        private Bitmap _bitmap;
+        
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
@@ -156,27 +149,27 @@ namespace bbplayer
             {
                 Point cursor;
                 GetCursorPos( out cursor );
-                _boardTopLeft = cursor;
-                _boardBottomRight = new Point(cursor.X + (40*8), cursor.Y + (40*8));
+                boardTopLeft = cursor;
+                boardBottomRight = new Point(cursor.X + (BoardPiece.Width*8), cursor.Y + (BoardPiece.Height*8));
 
-                this.RefreshBoardFromBitmap();
+                this.UpdateBoard();
 
                 var timer = new DispatcherTimer();
                 timer.Interval = TimeSpan.FromMilliseconds( 100 );
                 timer.Tick += delegate
                 {
-                    this.RefreshBoardFromBitmap();
+                    this.UpdateBoard();
 
                     var solution = this.FindSolution();
                     this.HighlightSolution(solution);
 
                 };
-                timer.Start();
+                //timer.Start();
             }
 
             if ( e.Key == Key.D2 )
             {
-                this.RefreshBoardFromBitmap();
+                this.UpdateBoard();
             }
 
             if ( e.Key == Key.D3 )
@@ -187,12 +180,12 @@ namespace bbplayer
 
             if ( e.Key == Key.D4 )
             {
-                this.RefreshBoardFromBitmap();
+                this.UpdateBoard();
 
                 int tryCounter = 0;
                 while (_unknownCount > 0)
                 {
-                    this.RefreshBoardFromBitmap();
+                    this.UpdateBoard();
                     Thread.Sleep( 100 );
 
                     if ((tryCounter++) > 10)
@@ -204,17 +197,17 @@ namespace bbplayer
                 this.ApplySolution(solution);
 
                 Thread.Sleep( 250 );
-                this.RefreshBoardFromBitmap();
+                this.UpdateBoard();
             }
             
             if ( e.Key == Key.D5 )
             {
-                RefreshBoardFromBitmap();
+                this.UpdateBoard();
 
                 int tryCounter = 0;
                 while (_unknownCount > 0)
                 {
-                    this.RefreshBoardFromBitmap();
+                    this.UpdateBoard();
                     Thread.Sleep( 100 );
 
                     if ((tryCounter++) > 10)
@@ -226,7 +219,7 @@ namespace bbplayer
                 this.ApplySolution(solution);
 
                 Thread.Sleep( 250 );
-                this.RefreshBoardFromBitmap();
+                this.UpdateBoard();
             }
 
             if ( e.Key == Key.H )
@@ -238,31 +231,58 @@ namespace bbplayer
             base.OnKeyDown(e);
         }
 
-        private void UpdateBitmap()
+        private void CleanBitmap(Bitmap bitmap)
         {
-            var size = new System.Drawing.Size(_boardBottomRight.X - _boardTopLeft.X, _boardBottomRight.Y - _boardTopLeft.Y);
+            var darkGrayBackground = System.Drawing.Color.FromArgb(11, 11, 11);
+            var lightGrayBackground = System.Drawing.Color.FromArgb(47, 47, 47);
 
-            _bitmap = new Bitmap(size.Width, size.Height);
-            Graphics gra = Graphics.FromImage(_bitmap);
-            gra.CopyFromScreen(_boardTopLeft, new Point(0, 0), size);            
+            var artifactColor1 = System.Drawing.Color.FromArgb(13, 13, 13);
+            var artifactColor2 = System.Drawing.Color.FromArgb(45, 45, 45);
+            var artifactColor3 = System.Drawing.Color.FromArgb(43, 43, 43);
 
-            BitmapSource bs = Imaging.CreateBitmapSourceFromHBitmap(
-                _bitmap.GetHbitmap(), 
+            for (int x = 0; x < bitmap.Width; x++)
+            {
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+                    var pixel = bitmap.GetPixel(x, y);
+                    if (pixel.Equals(lightGrayBackground)
+                        || pixel.Equals(artifactColor1)
+                        || pixel.Equals(artifactColor2)
+                        || pixel.Equals(artifactColor3))
+                    {
+                        bitmap.SetPixel(x, y, darkGrayBackground);
+                    }
+                }                
+            }
+        }
+
+        private void UpdateBoard()
+        {
+            var size = new System.Drawing.Size(
+                boardBottomRight.X - boardTopLeft.X, 
+                boardBottomRight.Y - boardTopLeft.Y);
+
+            var bitmap = new Bitmap(size.Width, size.Height);
+            var graphics = Graphics.FromImage(bitmap);
+            graphics.CopyFromScreen(boardTopLeft, new Point(0, 0), size);
+
+            CleanBitmap(bitmap);
+
+            var bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
+                bitmap.GetHbitmap(), 
                 IntPtr.Zero,
                 Int32Rect.Empty, 
                 BitmapSizeOptions.FromEmptyOptions());
 
-            image1.Source = bs;            
+            imgBoardBitmap.Source = bitmapSource;
+            this.board.UpdateBoardImage(bitmap);
         }
-
-        private static Random random = new Random();
 
         private Solution FindSolution(bool chooseRandom = false)
         {
-            var sf = new NaiveBestSolutionFinder( _board );
-            var sol = sf.FindSolutions();
+            var solutions = this.board.FindSolutions();
 
-            if (sol == null)
+            if (solutions == null)
             {
                 this.solutionDescription.Content = "No solution found";
                 return null;
@@ -272,12 +292,12 @@ namespace bbplayer
 
             if (chooseRandom)
             {
-                int randomSolution = random.Next(0, sol.Length - 1);
-                solution = sol[randomSolution];
+                int randomSolution = random.Next(0, solutions.Length - 1);
+                solution = solutions[randomSolution];
             }
             else
             {
-                solution = sol.First();
+                solution = solutions.First();
             }
 
             this.solutionDescription.Content = string.Format("Solution: (weight:{4}) x:{0}, y:{1} to x{2}, y:{3}",
@@ -295,11 +315,11 @@ namespace bbplayer
             rectSolutionSource.Visibility = Visibility.Visible;
             rectSolutionDest.Visibility = Visibility.Visible;
 
-            var sourceTopLeftY = Canvas.GetTop(this.image1) + (sol.ArrayPosition1.Y*40);
-            var sourceTopLeftX = Canvas.GetLeft(this.image1) + (sol.ArrayPosition1.X*40);
+            var sourceTopLeftY = Canvas.GetTop(this.imgBoardBitmap) + (sol.ArrayPosition1.Y*BoardPiece.Height);
+            var sourceTopLeftX = Canvas.GetLeft(this.imgBoardBitmap) + (sol.ArrayPosition1.X*BoardPiece.Width);
             
-            var destTopLeftY = Canvas.GetTop(this.image1) + (sol.ArrayPosition2.Y*40);
-            var destTopLeftX = Canvas.GetLeft(this.image1) + (sol.ArrayPosition2.X*40);
+            var destTopLeftY = Canvas.GetTop(this.imgBoardBitmap) + (sol.ArrayPosition2.Y*BoardPiece.Height);
+            var destTopLeftX = Canvas.GetLeft(this.imgBoardBitmap) + (sol.ArrayPosition2.X*BoardPiece.Width);
 
             Canvas.SetTop(rectSolutionSource, sourceTopLeftY);
             Canvas.SetLeft(rectSolutionSource, sourceTopLeftX);
@@ -310,8 +330,8 @@ namespace bbplayer
 
         private void ApplySolution( Solution sol )
         {
-            SetCursorPos( _boardTopLeft.X + 20 + ( sol.ArrayPosition1.X * 40 ),
-                          _boardTopLeft.Y + 20 + ( sol.ArrayPosition1.Y * 40 ) );
+            SetCursorPos( boardTopLeft.X + 20 + ( sol.ArrayPosition1.X * BoardPiece.Width ),
+                          boardTopLeft.Y + 20 + ( sol.ArrayPosition1.Y * BoardPiece.Height ) );
 
             mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
             Thread.Sleep( 50 );
@@ -319,8 +339,8 @@ namespace bbplayer
 
             Thread.Sleep( 100 );
 
-            SetCursorPos( _boardTopLeft.X + 20 + ( sol.ArrayPosition2.X * 40 ),
-                          _boardTopLeft.Y + 20 + ( sol.ArrayPosition2.Y * 40 ) );
+            SetCursorPos( boardTopLeft.X + 20 + ( sol.ArrayPosition2.X * BoardPiece.Width ),
+                          boardTopLeft.Y + 20 + ( sol.ArrayPosition2.Y * BoardPiece.Height ) );
 
             mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
             Thread.Sleep( 50 );
@@ -332,75 +352,9 @@ namespace bbplayer
         private int _unknownCount;
         private int _refreshCount;
 
-        private BitmapImage BitmapToImageSource(Bitmap bitmap, ImageFormat imgFormat)
-        {
-            if (bitmap == null)
-                return null;
 
-            using (MemoryStream memory = new MemoryStream())
-            {
-                bitmap.Save(memory, imgFormat);
-                memory.Position = 0;
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
 
-                return bitmapImage;
-            }
-        }
 
-        private void RefreshBoardFromBitmap()
-        {
-            this.UpdateBitmap();
-
-            _unknownCount = 0;
-
-            for (int y = 0; y < 8; y++)
-            {
-                for (int x = 0; x < 8; x++)
-                {
-                    int setX = 40*x;
-                    int setY = 40*y;
-
-                    int screenX = _boardTopLeft.X + setX;
-                    int screenY = _boardTopLeft.Y + setY;
-                    //SetCursorPos(screenX, screenY);
-
-                    //Thread.Sleep(500);
-
-                    // Use average color
-//                    var averageColor = ColorUtility.GetAveragePieceColor(_bitmap, setX, setY);                   
-//                    var matches = BoardPiece.FindMatches(averageColor);
-
-                    var matches = BoardPiece.FindMatches(_bitmap, setX, setY);
-                    
-                    var closestMatch = matches.GetClosestMatch().BoardPiece;
-
-                    //_board[y, x].Facade.Fill = new SolidColorBrush(ConvertToMediaColor(averageColor));
-                    _board[y, x].Facade.ToolTip = closestMatch.Name;
-
-                    if (closestMatch.GetImage() != null)
-                        _board[y, x].Facade.Fill = new ImageBrush(this.BitmapToImageSource(closestMatch.GetImage(), ImageFormat.Bmp));
-                    
-                    
-                    if (closestMatch == BoardPiece.Unknown)
-                    {
-                        _unknownCount++;
-                        _board[y, x].Facade.Stroke = Brushes.Red;
-                        _board[y, x].Facade.StrokeThickness = 3;
-                    }
-                    else
-                    {
-                        _board[y, x].Facade.Stroke = Brushes.Black;
-                        _board[y, x].Facade.StrokeThickness = 1;
-                    }
-
-                    _board[y, x].SetPiece(closestMatch, new Point(setX, setY), y, x);
-                }
-            }
-        }
 
 //        private void UseHypercube()
 //        {
@@ -509,92 +463,8 @@ namespace bbplayer
             public IDictionary<RootBoardPiece, int> RootBoardPieceWeights { get; private set; }
         }
 
-        private ColorPoints GetColorPointsFromBitmap(int x, int y)
-        {
-            System.Drawing.Color centerColor = _bitmap.GetPixel(x, y);
-            var leftColor = _bitmap.GetPixel(x + ColorPoints.LeftMostOffset, y);
-            var rightColor = _bitmap.GetPixel(x + ColorPoints.RightMostOffset, y );
 
-            var topMaxColor = _bitmap.GetPixel(x, y + ColorPoints.TopMostOffset );
-            var bottomMaxColor = _bitmap.GetPixel(x, y + ColorPoints.BottomMostOffset );
 
-            var topMidColor = _bitmap.GetPixel(x, y - ColorPoints.TopMiddleOffset );
-            var bottomMidColor = _bitmap.GetPixel(x, y + ColorPoints.BottomMiddleOffset );
-
-            var colorPoints = new ColorPoints
-            {
-                Center = ConvertToDrawingColor(ConvertToMediaColor(centerColor)),
-                TopMost = ConvertToDrawingColor(ConvertToMediaColor(topMaxColor)),
-                TopMiddle = ConvertToDrawingColor(ConvertToMediaColor(topMidColor)),
-                BottomMost = ConvertToDrawingColor(ConvertToMediaColor(bottomMaxColor)),
-                BottomMiddle = ConvertToDrawingColor(ConvertToMediaColor(bottomMidColor)),
-                LeftMost = ConvertToDrawingColor(ConvertToMediaColor(leftColor)),
-                RightMost = ConvertToDrawingColor(ConvertToMediaColor(rightColor))
-            };
-
-            return colorPoints;
-        }
-
-        private ColorPoints GetColorPointsFrom( IntPtr dc, int x, int y )
-        {          
-            var centerColor = GetPixelColorAt( dc, x, y );
-            var leftColor = GetPixelColorAt( dc, x + ColorPoints.LeftMostOffset, y );
-            var rightColor = GetPixelColorAt( dc, x + ColorPoints.RightMostOffset, y );
-
-            var topMaxColor = GetPixelColorAt( dc, x, y + ColorPoints.TopMostOffset );
-            var bottomMaxColor = GetPixelColorAt( dc, x, y + ColorPoints.BottomMostOffset );
-
-            var topMidColor = GetPixelColorAt( dc, x, y - ColorPoints.TopMiddleOffset );
-            var bottomMidColor = GetPixelColorAt( dc, x, y + ColorPoints.BottomMiddleOffset );
-
-            var colorPoints = new ColorPoints
-            {
-                Center = ConvertToDrawingColor( centerColor ),
-                TopMost = ConvertToDrawingColor( topMaxColor ),
-                TopMiddle = ConvertToDrawingColor( topMidColor ),
-
-                BottomMost = ConvertToDrawingColor( bottomMaxColor ),
-                BottomMiddle = ConvertToDrawingColor( bottomMidColor ),
-
-                LeftMost = ConvertToDrawingColor( leftColor ),
-                RightMost = ConvertToDrawingColor( rightColor )
-            };
-
-            return colorPoints;
-        }
-
-        private static System.Drawing.Color ConvertToDrawingColor( Color color )
-        {
-            return System.Drawing.Color.FromArgb( 255, Convert.ToByte( color.R ), Convert.ToByte( color.G ), Convert.ToByte( color.B ) );
-        }
-
-        public static Color ConvertToMediaColor( System.Drawing.Color color )
-        {
-            return Color.FromArgb( 255, Convert.ToByte( color.R ), Convert.ToByte( color.G ), Convert.ToByte( color.B ) );
-        }
-
-        private static Color GetDominantColor( Color[] colors )
-        {
-            //Used for tally
-            int r = 0;
-            int g = 0;
-            int b = 0;
-
-            foreach ( Color color in colors )
-            {
-                r += color.R;
-                g += color.G;
-                b += color.B;
-            }
-
-            //Calculate average
-            r /= colors.Length;
-            g /= colors.Length;
-            b /= colors.Length;
-
-            var newColor = Color.FromArgb( 255, Convert.ToByte( r ), Convert.ToByte( g ), Convert.ToByte( b ) );
-            return newColor;
-        }
 
         private Color GetPixelColorAt( IntPtr dc, int x, int y )
         {
@@ -739,14 +609,13 @@ namespace bbplayer
             imageHighlight.Fill = Brushes.Transparent;
             imageHighlight.Visibility = Visibility.Visible;
 
-
-            var bitmapTopLeftY = Canvas.GetTop(image1) + (rectangleY*40);
-            var bitmapTopLeftX = Canvas.GetLeft(this.image1) + (rectangleX*40);
+            var bitmapTopLeftY = Canvas.GetTop(imgBoardBitmap) + (rectangleY*BoardPiece.Height);
+            var bitmapTopLeftX = Canvas.GetLeft(this.imgBoardBitmap) + (rectangleX*BoardPiece.Width);
 
             Canvas.SetTop(imageHighlight, bitmapTopLeftY);
             Canvas.SetLeft(imageHighlight, bitmapTopLeftX);
 
-            var matches = BoardPiece.FindMatches(_bitmap, rectangleX, rectangleY);
+            var matches = BoardPiece.FindMatches(this.board.BoardImage, rectangleX, rectangleY);
 
             var closestMatch = matches.GetClosestMatch();
 
@@ -773,23 +642,23 @@ namespace bbplayer
             if (item == null || item.MatchPair.BoardPiece.Name == "Unknown")
                 return;
 
-            rectSourcePiece.Fill = new ImageBrush(this.BitmapToImageSource(item.MatchPair.BoardPiece.GetImage(), ImageFormat.Bmp));
+            rectSourcePiece.Fill = new ImageBrush(ImageUtility.BitmapToImageSource(item.MatchPair.BoardPiece.GetImage(), ImageFormat.Bmp));
 
-            var piecePoint = new Point(this.highlightedPiece.X*40, this.highlightedPiece.Y*40);
-            var boardPiece = this._bitmap.Clone(
-                new Rectangle(piecePoint, new System.Drawing.Size(40, 40)),
+            var piecePoint = new Point(this.highlightedPiece.X*BoardPiece.Width, this.highlightedPiece.Y*BoardPiece.Height);
+            var boardPiece = this.board.BoardImage.Clone(
+                new Rectangle(piecePoint, new System.Drawing.Size(BoardPiece.Width, BoardPiece.Height)),
                 PixelFormat.DontCare);
 
-            rectBoardPiece.Fill = new ImageBrush(this.BitmapToImageSource(boardPiece, ImageFormat.Bmp));
+            rectBoardPiece.Fill = new ImageBrush(ImageUtility.BitmapToImageSource(boardPiece, ImageFormat.Bmp));
 
             lblColorDist.Content = item.MatchPair.Weight.ColorDistance.ToString("##.####");
             lblLuminanceDist.Content = item.MatchPair.Weight.LuminanceDistance.ToString("##.####");
 
-            rectBoardPieceAverageColor.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceColor(boardPiece, 0, 0)));
-            rectBoardPieceAverageLuminance.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceLuminance(boardPiece, 0, 0)));
+            rectBoardPieceAverageColor.Fill = new SolidColorBrush(ColorUtility.ConvertToMediaColor(ColorUtility.GetAveragePieceColor(boardPiece, 0, 0)));
+            rectBoardPieceAverageLuminance.Fill = new SolidColorBrush(ColorUtility.ConvertToMediaColor(ColorUtility.GetAveragePieceLuminance(boardPiece, 0, 0)));
 
-            rectSourcePieceAverageColor.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceColor(item.MatchPair.BoardPiece.GetImage(), 0, 0)));
-            rectSourcePieceAverageLuminance.Fill = new SolidColorBrush(ConvertToMediaColor(ColorUtility.GetAveragePieceLuminance(item.MatchPair.BoardPiece.GetImage(), 0, 0)));
+            rectSourcePieceAverageColor.Fill = new SolidColorBrush(ColorUtility.ConvertToMediaColor(ColorUtility.GetAveragePieceColor(item.MatchPair.BoardPiece.GetImage(), 0, 0)));
+            rectSourcePieceAverageLuminance.Fill = new SolidColorBrush(ColorUtility.ConvertToMediaColor(ColorUtility.GetAveragePieceLuminance(item.MatchPair.BoardPiece.GetImage(), 0, 0)));
 
             // histograms
             var sourceHistogram = ColorUtility.GetLuminanceHistogram(item.MatchPair.BoardPiece.GetImage(), 0, 0);

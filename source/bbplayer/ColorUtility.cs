@@ -1,19 +1,88 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using AForge.Imaging;
 
 namespace bbplayer
 {
     public class ColorUtility
     {
+        private static System.Windows.Media.Color GetDominantColor( System.Windows.Media.Color[] colors )
+        {
+            //Used for tally
+            int r = 0;
+            int g = 0;
+            int b = 0;
+
+            foreach ( System.Windows.Media.Color color in colors )
+            {
+                r += color.R;
+                g += color.G;
+                b += color.B;
+            }
+
+            //Calculate average
+            r /= colors.Length;
+            g /= colors.Length;
+            b /= colors.Length;
+
+            var newColor = System.Windows.Media.Color.FromArgb( 255, Convert.ToByte( r ), Convert.ToByte( g ), Convert.ToByte( b ) );
+            return newColor;
+        }
+
+        private static Color ConvertToDrawingColor(System.Windows.Media.Color color)
+        {
+            return Color.FromArgb(
+                255, 
+                Convert.ToByte(color.R), 
+                Convert.ToByte(color.G), 
+                Convert.ToByte(color.B));
+        }
+
+        public static System.Windows.Media.Color ConvertToMediaColor(Color color)
+        {
+            return System.Windows.Media.Color.FromArgb(
+                255, 
+                Convert.ToByte(color.R), 
+                Convert.ToByte(color.G),
+                Convert.ToByte(color.B));
+        }
+
+
+        public static double GetColorDifference(Color first, Color second)
+        {
+            return (Math.Max(first.R, second.R) - Math.Min(first.R, second.R))
+                   + (Math.Max(first.G, second.G) - Math.Min(first.G, second.G))
+                   + (Math.Max(first.B, second.B) - Math.Min(first.B, second.B));
+        }
+
+        public static double GetColorDistance(Color first, Color second)
+        {
+            double distance = Math.Sqrt(Math.Pow(first.R - second.R, 2)
+                                        + Math.Pow(first.G - second.G, 2)
+                                        + Math.Pow(first.B - second.B, 2));
+
+            return distance;
+        }
+
+
+        public static double GetLuminanceDistance(Color first, Color second)
+        {
+            double distance = Math.Sqrt(Math.Pow(first.GetHue() - second.GetHue(), 2)
+                                        + Math.Pow(first.GetSaturation() - second.GetSaturation(), 2)
+                                        + Math.Pow(first.GetBrightness() - second.GetBrightness(), 2));
+
+            return distance;
+        }
+
         public static Color GetAveragePieceColor(Bitmap bitmap, int pieceTopLeftX, int pieceTopLeftY)
         {
             float totalR = 0,
                   totalG = 0,
                   totalB = 0;
 
-            int width = 40,
-                height = 40;
+            int width = BoardPiece.Width,
+                height = BoardPiece.Height;
 
             if (bitmap.Width < width)
                 width = bitmap.Width;
@@ -63,9 +132,9 @@ namespace bbplayer
         {
             var mask = new byte[bitmap.Height, bitmap.Width];
             
-            for (int x = pieceTopLeftX; x < pieceTopLeftX + Math.Min(bitmap.Width, 40); x++)
+            for (int x = pieceTopLeftX; x < pieceTopLeftX + Math.Min(bitmap.Width, BoardPiece.Width); x++)
             {
-                for (int y = pieceTopLeftY; y < pieceTopLeftY + Math.Min(bitmap.Height, 40); y++)
+                for (int y = pieceTopLeftY; y < pieceTopLeftY + Math.Min(bitmap.Height, BoardPiece.Height); y++)
                 {
                     mask[y, x] = 1;
                 }
@@ -73,6 +142,7 @@ namespace bbplayer
 
             var st = new ImageStatisticsHSL(bitmap, mask);
             int[] luminanceValues = st.LuminanceWithoutBlack.Values;
+
             return luminanceValues;
         }
 
@@ -112,8 +182,8 @@ namespace bbplayer
                   totalS = 0,
                   totalB = 0;
 
-            int width = 40,
-                height = 40;
+            int width = BoardPiece.Width,
+                height = BoardPiece.Height;
 
             if (bitmap.Width < width)
                 width = bitmap.Width;

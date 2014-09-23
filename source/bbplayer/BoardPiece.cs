@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using iLandMan.Utility;
 
@@ -34,11 +35,14 @@ namespace bbplayer
 
     class BoardPiece
     {
-        private Color _pieceAverageColor;
-        private int[] _luminanceHistogram;
+        public const int Width = 40;
+        public const int Height = 40;
 
-        private BoardPiece( RootBoardPiece rootPiece, PieceWeight weight )
-            : this( rootPiece, weight, string.Format( "{0} {1}", rootPiece.ToString().PascalCaseToWord(), weight ) )
+        private readonly Color pieceAverageColor;
+        private readonly int[] luminanceHistogram;
+
+        private BoardPiece(RootBoardPiece rootPiece, PieceWeight weight)
+            : this(rootPiece, weight, string.Format("{0} {1}", rootPiece.ToString().PascalCaseToWord(), weight))
         {}
 
         private BoardPiece(RootBoardPiece rootPiece, PieceWeight weight, string name)
@@ -61,13 +65,13 @@ namespace bbplayer
             var image = GetImage();
             if (image == null)
             {
-                this._pieceAverageColor = Color.Black;
-                this._luminanceHistogram = new int[256];
+                this.pieceAverageColor = Color.Black;
+                this.luminanceHistogram = new int[256];
             }
             else
             {
-                this._pieceAverageColor = ColorUtility.GetAveragePieceColor(image, 0, 0);
-                this._luminanceHistogram = ColorUtility.GetLuminanceHistogram(image, 0, 0);
+                this.pieceAverageColor = ColorUtility.GetAveragePieceColor(image, 0, 0);
+                this.luminanceHistogram = ColorUtility.GetLuminanceHistogram(image, 0, 0);
             }
         }
 
@@ -80,83 +84,30 @@ namespace bbplayer
         public Bitmap GetImage()
         {
             var stream = GetImageStream();
-            if ( stream == null )
+            if (stream == null)
                 return null;
 
-            return new Bitmap( GetImageStream() );
+            return new Bitmap(GetImageStream());
         }
 
         public Stream GetImageStream()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var imageStream = assembly.GetManifestResourceStream( "bbplayer.images." + ImageFileName );
+            var imageStream = assembly.GetManifestResourceStream("bbplayer.images." + ImageFileName);
 
-            if ( imageStream == null )
+            if (imageStream == null)
                 return null;
 
             return imageStream;
         }
 
-        public MatchData MatchAgainst(Bitmap bitmap, int pieceX, int pieceY)
+        public MatchData MatchAgainst(BoardPieceMetrics boardPieceMetrics)
         {
-            var averageColor = ColorUtility.GetAveragePieceColor(bitmap, pieceX, pieceY);
-            double colorDistance = GetColorDistance(this._pieceAverageColor, averageColor);
+            double colorDistance = ColorUtility.GetColorDistance(this.pieceAverageColor, boardPieceMetrics.AverageColor);
+            double luminanceDistance = ColorUtility.GetLuminanceDistance(this.pieceAverageColor, boardPieceMetrics.AverageLuminance);
+            double histogramDistance = ColorUtility.GetHistogramDistance(this.luminanceHistogram, boardPieceMetrics.LuminanceHistogram);
 
-            var averageLuminance = ColorUtility.GetAveragePieceLuminance(bitmap, pieceX, pieceY);
-            double luminanceDistance = GetLuminanceDistance(this._pieceAverageColor, averageLuminance);
-
-//            int[] histogram = ColorUtility.GetLuminanceHistogram(bitmap, pieceX, pieceY);
-//            double histogramDistance = ColorUtility.GetHistogramDistance(this._luminanceHistogram, histogram);
-
-            return new MatchData(colorDistance, luminanceDistance, double.MaxValue);
-        }
-
-        public static double GetColorDifference(Color first, Color second)
-        {
-            return (Math.Max(first.R, second.R) - Math.Min(first.R, second.R))
-                   + (Math.Max(first.G, second.G) - Math.Min(first.G, second.G))
-                   + (Math.Max(first.B, second.B) - Math.Min(first.B, second.B));
-        }
-
-        public static double GetColorDistance( Color first, Color second )
-        {
-            double distance = Math.Sqrt( Math.Pow( first.R - second.R, 2 )
-                                         + Math.Pow( first.G - second.G, 2 )
-                                         + Math.Pow( first.B - second.B, 2 ) );
-
-            return distance;
-        }
-
-
-        public static double GetLuminanceDistance( Color first, Color second )
-        {
-            double distance = Math.Sqrt( Math.Pow( first.GetHue() - second.GetHue(), 2 )
-                                         + Math.Pow( first.GetSaturation() - second.GetSaturation(), 2 )
-                                         + Math.Pow( first.GetBrightness() - second.GetBrightness(), 2 ) );
-
-            return distance;
-        }
-
-        public static Color GetAverageColor( ICollection<Color> colors )
-        {
-            //Used for tally
-            int r = 0;
-            int g = 0;
-            int b = 0;
-
-            foreach ( Color color in colors )
-            {
-                r += color.R;
-                g += color.G;
-                b += color.B;
-            }
-
-            //Calculate average
-            r /= colors.Count;
-            g /= colors.Count;
-            b /= colors.Count;
-
-            return Color.FromArgb( r, g, b );
+            return new MatchData(colorDistance, luminanceDistance, histogramDistance);
         }
 
         #region Factories
@@ -199,45 +150,73 @@ namespace bbplayer
 
         #endregion
 
+        public class BoardPieceMetrics
+        {
+            public BoardPieceMetrics(Color averageColor, Color averageLuminance, int[] luminanceHistogram)
+            {
+                AverageColor = averageColor;
+                AverageLuminance = averageLuminance;
+                LuminanceHistogram = luminanceHistogram;
+            }
+
+            public Color AverageColor { get; private set; }
+            public Color AverageLuminance { get; private set; }
+            public int[] LuminanceHistogram { get; private set; }
+        }
+
+        public static BoardPieceMetrics GetBoardPieceMetrics(Bitmap board, int pieceX, int pieceY)
+        {
+            int topLeftX = pieceX*Width;
+            int topLeftY = pieceY*Height;
+
+            var averageColor = ColorUtility.GetAveragePieceColor(board, topLeftX, topLeftY);
+            var averageLuminance = ColorUtility.GetAveragePieceLuminance(board, topLeftX, topLeftY);
+            var luminanceHistogram = ColorUtility.GetLuminanceHistogram(board, topLeftX, topLeftY);
+
+            return new BoardPieceMetrics(averageColor, averageLuminance, luminanceHistogram);
+        }
+
         public static IList<MatchPair> FindMatches(Bitmap board, int pieceX, int pieceY)
         {
+            var pieceMetrics = GetBoardPieceMetrics(board, pieceX, pieceY);
+
             var matches = new List<MatchPair>();
 
-            matches.Add(new MatchPair(Unknown.MatchAgainst(board, pieceX, pieceY), Unknown));
+            matches.Add(new MatchPair(Unknown.MatchAgainst(pieceMetrics), Unknown));
 
-            matches.Add(new MatchPair(HyperCube.MatchAgainst(board, pieceX, pieceY), HyperCube));
+            matches.Add(new MatchPair(HyperCube.MatchAgainst(pieceMetrics), HyperCube));
 
-            matches.Add(new MatchPair(RedSquare.MatchAgainst(board, pieceX, pieceY), RedSquare));
-            matches.Add(new MatchPair(OrangeDecahedron.MatchAgainst(board, pieceX, pieceY), OrangeDecahedron));
-            matches.Add(new MatchPair(PurpleTriangle.MatchAgainst(board, pieceX, pieceY), PurpleTriangle));
-            matches.Add(new MatchPair(GreenSphere.MatchAgainst(board, pieceX, pieceY), GreenSphere));
-            matches.Add(new MatchPair(BlueDiamond.MatchAgainst(board, pieceX, pieceY), BlueDiamond));
-            matches.Add(new MatchPair(GrayRock.MatchAgainst(board, pieceX, pieceY), GrayRock));
-            matches.Add(new MatchPair(YellowSquare.MatchAgainst(board, pieceX, pieceY), YellowSquare));
+            matches.Add(new MatchPair(RedSquare.MatchAgainst(pieceMetrics), RedSquare));
+            matches.Add(new MatchPair(OrangeDecahedron.MatchAgainst(pieceMetrics), OrangeDecahedron));
+            matches.Add(new MatchPair(PurpleTriangle.MatchAgainst(pieceMetrics), PurpleTriangle));
+            matches.Add(new MatchPair(GreenSphere.MatchAgainst(pieceMetrics), GreenSphere));
+            matches.Add(new MatchPair(BlueDiamond.MatchAgainst(pieceMetrics), BlueDiamond));
+            matches.Add(new MatchPair(GrayRock.MatchAgainst(pieceMetrics), GrayRock));
+            matches.Add(new MatchPair(YellowSquare.MatchAgainst(pieceMetrics), YellowSquare));
 
-            matches.Add(new MatchPair(RedSquare_Power.MatchAgainst(board, pieceX, pieceY), RedSquare_Power));
-            matches.Add(new MatchPair(OrangeDecahedron_Power.MatchAgainst(board, pieceX, pieceY), OrangeDecahedron_Power));
-            matches.Add(new MatchPair(PurpleTriangle_Power.MatchAgainst(board, pieceX, pieceY), PurpleTriangle_Power));
-            matches.Add(new MatchPair(GreenSphere_Power.MatchAgainst(board, pieceX, pieceY), GreenSphere_Power));
-            matches.Add(new MatchPair(BlueDiamond_Power.MatchAgainst(board, pieceX, pieceY), BlueDiamond_Power));
-            matches.Add(new MatchPair(GrayRock_Power.MatchAgainst(board, pieceX, pieceY), GrayRock_Power));
-            matches.Add(new MatchPair(YellowSquare_Power.MatchAgainst(board, pieceX, pieceY), YellowSquare_Power));
+            matches.Add(new MatchPair(RedSquare_Power.MatchAgainst(pieceMetrics), RedSquare_Power));
+            matches.Add(new MatchPair(OrangeDecahedron_Power.MatchAgainst(pieceMetrics), OrangeDecahedron_Power));
+            matches.Add(new MatchPair(PurpleTriangle_Power.MatchAgainst(pieceMetrics), PurpleTriangle_Power));
+            matches.Add(new MatchPair(GreenSphere_Power.MatchAgainst(pieceMetrics), GreenSphere_Power));
+            matches.Add(new MatchPair(BlueDiamond_Power.MatchAgainst(pieceMetrics), BlueDiamond_Power));
+            matches.Add(new MatchPair(GrayRock_Power.MatchAgainst(pieceMetrics), GrayRock_Power));
+            matches.Add(new MatchPair(YellowSquare_Power.MatchAgainst(pieceMetrics), YellowSquare_Power));
 
-            matches.Add(new MatchPair(RedSquare_Multiplier.MatchAgainst(board, pieceX, pieceY), RedSquare_Multiplier));
-            matches.Add(new MatchPair(OrangeDecahedron_Multiplier.MatchAgainst(board, pieceX, pieceY), OrangeDecahedron_Multiplier));
-            matches.Add(new MatchPair(PurpleTriangle_Multiplier.MatchAgainst(board, pieceX, pieceY), PurpleTriangle_Multiplier));
-            matches.Add(new MatchPair(GreenSphere_Multiplier.MatchAgainst(board, pieceX, pieceY), GreenSphere_Multiplier));
-            matches.Add(new MatchPair(BlueDiamond_Multiplier.MatchAgainst(board, pieceX, pieceY), BlueDiamond_Multiplier));
-            matches.Add(new MatchPair(GrayRock_Multiplier.MatchAgainst(board, pieceX, pieceY), GrayRock_Multiplier));
-            matches.Add(new MatchPair(YellowSquare_Multiplier.MatchAgainst(board, pieceX, pieceY), YellowSquare_Multiplier));
+            matches.Add(new MatchPair(RedSquare_Multiplier.MatchAgainst(pieceMetrics), RedSquare_Multiplier));
+            matches.Add(new MatchPair(OrangeDecahedron_Multiplier.MatchAgainst(pieceMetrics), OrangeDecahedron_Multiplier));
+            matches.Add(new MatchPair(PurpleTriangle_Multiplier.MatchAgainst(pieceMetrics), PurpleTriangle_Multiplier));
+            matches.Add(new MatchPair(GreenSphere_Multiplier.MatchAgainst(pieceMetrics), GreenSphere_Multiplier));
+            matches.Add(new MatchPair(BlueDiamond_Multiplier.MatchAgainst(pieceMetrics), BlueDiamond_Multiplier));
+            matches.Add(new MatchPair(GrayRock_Multiplier.MatchAgainst(pieceMetrics), GrayRock_Multiplier));
+            matches.Add(new MatchPair(YellowSquare_Multiplier.MatchAgainst(pieceMetrics), YellowSquare_Multiplier));
             
-            matches.Add(new MatchPair(RedSquare_Fire.MatchAgainst(board, pieceX, pieceY), RedSquare_Fire));
-            matches.Add(new MatchPair(OrangeDecahedron_Fire.MatchAgainst(board, pieceX, pieceY), OrangeDecahedron_Fire));
-            matches.Add(new MatchPair(PurpleTriangle_Fire.MatchAgainst(board, pieceX, pieceY), PurpleTriangle_Fire));
-            matches.Add(new MatchPair(GreenSphere_Fire.MatchAgainst(board, pieceX, pieceY), GreenSphere_Fire));
-            matches.Add(new MatchPair(BlueDiamond_Fire.MatchAgainst(board, pieceX, pieceY), BlueDiamond_Fire));
-            matches.Add(new MatchPair(GrayRock_Fire.MatchAgainst(board, pieceX, pieceY), GrayRock_Fire));
-            matches.Add(new MatchPair(YellowSquare_Fire.MatchAgainst(board, pieceX, pieceY), YellowSquare_Fire));
+            matches.Add(new MatchPair(RedSquare_Fire.MatchAgainst(pieceMetrics), RedSquare_Fire));
+            matches.Add(new MatchPair(OrangeDecahedron_Fire.MatchAgainst(pieceMetrics), OrangeDecahedron_Fire));
+            matches.Add(new MatchPair(PurpleTriangle_Fire.MatchAgainst(pieceMetrics), PurpleTriangle_Fire));
+            matches.Add(new MatchPair(GreenSphere_Fire.MatchAgainst(pieceMetrics), GreenSphere_Fire));
+            matches.Add(new MatchPair(BlueDiamond_Fire.MatchAgainst(pieceMetrics), BlueDiamond_Fire));
+            matches.Add(new MatchPair(GrayRock_Fire.MatchAgainst(pieceMetrics), GrayRock_Fire));
+            matches.Add(new MatchPair(YellowSquare_Fire.MatchAgainst(pieceMetrics), YellowSquare_Fire));
 
             var orderedMatches = matches
                 .OrderBy(m => m.Weight.ColorDistance)
@@ -338,13 +317,14 @@ namespace bbplayer
     {
         public static BoardPiece.MatchPair GetClosestMatch(this ICollection<BoardPiece.MatchPair> matchPairs)
         {
-            //return matchPairs.OrderBy(m => m.Weight.First + m.Weight.Second).First();
-
             if (matchPairs.Any(m => m.Weight.ColorDistance < 6))
                 return matchPairs.First(m => m.Weight.ColorDistance < 6);
             
             if (matchPairs.Any(m => m.Weight.LuminanceDistance < 6))
-                return matchPairs.First(m => m.Weight.LuminanceDistance < 6);            
+                return matchPairs.First(m => m.Weight.LuminanceDistance < 6);
+
+//            if (matchPairs.Any(m => m.Weight.HistogramDistance < 100))
+//                return matchPairs.First(m => m.Weight.HistogramDistance < 100);
 
             return matchPairs
                 .OrderBy(m => m.Weight.ColorDistance)

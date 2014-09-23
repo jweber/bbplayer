@@ -101,7 +101,7 @@
             </Label.Effect>
         </Label>
         <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="323" Margin="264,12,0,0" VerticalAlignment="Top" Width="463">
-            <Image x:Name="image1" Stretch="None" Width="320" Height="320" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="1" Canvas.Top="1" />
+            <Image x:Name="imgBoardBitmap" Stretch="None" Width="320" Height="320" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="1" Canvas.Top="1" />
             <Rectangle Visibility="Hidden" x:Name="imageHighlight" Fill="Transparent" HorizontalAlignment="Left" Height="40" Stroke="Red" StrokeThickness="1" VerticalAlignment="Top" Width="40" Canvas.Left="10" Canvas.Top="422">
                 <Rectangle.Effect>
                     <DropShadowEffect Color="Red" BlurRadius="5" ShadowDepth="0"/>
