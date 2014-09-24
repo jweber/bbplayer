@@ -65,10 +65,6 @@
     <Reference Include="AForge.Math">
       <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
     </Reference>
-    <Reference Include="JetBrains.dotTrace.Api, Version=3.1.355.1000, Culture=neutral, PublicKeyToken=a69a3c730d060360">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\JetBrains\dotTrace 3.1\JetBrains.dotTrace.Api.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core">

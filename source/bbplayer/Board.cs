@@ -19,6 +19,8 @@ namespace bbplayer
             boardPositions = new BoardPosition[8,8];
         }
 
+        public Point ScreenTopLeft { get; set; }
+
         public Bitmap BoardImage { get { return this.boardImage; } }
 
         public int UpdateBoardImage(Bitmap bitmap)

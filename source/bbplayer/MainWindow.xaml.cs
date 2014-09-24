@@ -33,18 +33,16 @@ namespace bbplayer
 
         private readonly Board board;
 
-        private Point 
-            boardTopLeft, 
-            boardBottomRight;
+        //private Point boardTopLeft;
 
         public MainWindow()
         {
             InitializeComponent();
 
-//            var timer = new DispatcherTimer();
-//            timer.Interval = TimeSpan.FromMilliseconds( 100 );
-//            timer.Tick += CapturePixelColorUnderCursor;
-//            timer.Start();
+            var timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds( 100 );
+            timer.Tick += CapturePixelColorUnderCursor;
+            timer.Start();
 
             this.board = new Board();
             this.InitializeBoard();
@@ -143,7 +141,54 @@ namespace bbplayer
 //            return bm;
 //        }
 
-        
+        private Point CalibrateBoardLocation(Point cursorLocation)
+        {
+            var darkGrayBackground = Color.FromRgb(11, 11, 11);
+
+            int topLeftX = cursorLocation.X;
+            int topLeftY = cursorLocation.Y;
+
+            Action<int, int> onEachIteration = (x, y) => SetCursorPos(x, y);
+
+            var leftColor = GetPixelColorAt(GetDC(IntPtr.Zero), --topLeftX, topLeftY);
+            while (!leftColor.Equals(darkGrayBackground))
+            {
+                if (Math.Abs(cursorLocation.X - topLeftX) > BoardPiece.Width)
+                    break;
+
+                leftColor = GetPixelColorAt(GetDC(IntPtr.Zero), --topLeftX, topLeftY);
+                onEachIteration(topLeftX, topLeftY);
+            }
+            while (leftColor.Equals(darkGrayBackground))
+            {
+                if (Math.Abs(cursorLocation.X - topLeftX) > BoardPiece.Width)
+                    break;
+
+                leftColor = GetPixelColorAt(GetDC(IntPtr.Zero), --topLeftX, topLeftY);
+                onEachIteration(topLeftX, topLeftY);
+            }
+            topLeftX++;
+
+            var topColor = GetPixelColorAt(GetDC(IntPtr.Zero), topLeftX, --topLeftY);
+            while (!topColor.Equals(darkGrayBackground))
+            {
+                if (Math.Abs(cursorLocation.Y - topLeftY) > BoardPiece.Height)
+                    break;
+
+                topColor = GetPixelColorAt(GetDC(IntPtr.Zero), topLeftX, --topLeftY);
+                onEachIteration(topLeftX, topLeftY);
+            }
+            while (topColor.Equals(darkGrayBackground))
+            {
+                if (Math.Abs(cursorLocation.Y - topLeftY) > BoardPiece.Height)
+                    break;
+
+                topColor = GetPixelColorAt(GetDC(IntPtr.Zero), topLeftX, --topLeftY);
+                onEachIteration(topLeftX, topLeftY);
+            }
+
+            return new Point(topLeftX, topLeftY);
+        }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
@@ -151,9 +196,10 @@ namespace bbplayer
             {
                 Point cursor;
                 GetCursorPos( out cursor );
-                boardTopLeft = cursor;
-                boardBottomRight = new Point(cursor.X + (BoardPiece.Width*8), cursor.Y + (BoardPiece.Height*8));
 
+                var calibratedBoardTopLeft = this.CalibrateBoardLocation(cursor);
+
+                this.board.ScreenTopLeft = calibratedBoardTopLeft;
                 this.UpdateBoard();
 
                 var timer = new DispatcherTimer();
@@ -258,15 +304,19 @@ namespace bbplayer
             }
         }
 
-        private void UpdateBoard()
+        private Bitmap UpdateBoardImage(Point topLeft)
         {
+            var bottomRight = new Point(
+                topLeft.X + (BoardPiece.Width*8), 
+                topLeft.Y + (BoardPiece.Height*8));
+
             var size = new System.Drawing.Size(
-                boardBottomRight.X - boardTopLeft.X, 
-                boardBottomRight.Y - boardTopLeft.Y);
+                bottomRight.X - topLeft.X, 
+                bottomRight.Y - topLeft.Y);
 
             var bitmap = new Bitmap(size.Width, size.Height);
             var graphics = Graphics.FromImage(bitmap);
-            graphics.CopyFromScreen(boardTopLeft, new Point(0, 0), size);
+            graphics.CopyFromScreen(topLeft, new Point(0, 0), size);
 
            CleanBitmap(bitmap);
 
@@ -277,6 +327,12 @@ namespace bbplayer
                 BitmapSizeOptions.FromEmptyOptions());
 
             imgBoardBitmap.Source = bitmapSource;
+            return bitmap;
+        }
+
+        private void UpdateBoard()
+        {
+            var bitmap = this.UpdateBoardImage(this.board.ScreenTopLeft);
             this.unknownCount = this.board.UpdateBoardImage(bitmap);
         }
 
@@ -332,8 +388,9 @@ namespace bbplayer
 
         private void ApplySolution( Solution sol )
         {
-            SetCursorPos( boardTopLeft.X + 20 + ( sol.ArrayPosition1.X * BoardPiece.Width ),
-                          boardTopLeft.Y + 20 + ( sol.ArrayPosition1.Y * BoardPiece.Height ) );
+            SetCursorPos(
+                this.board.ScreenTopLeft.X + 20 + (sol.ArrayPosition1.X*BoardPiece.Width),
+                this.board.ScreenTopLeft.Y + 20 + (sol.ArrayPosition1.Y*BoardPiece.Height));
 
             mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
             Thread.Sleep( 50 );
@@ -341,8 +398,9 @@ namespace bbplayer
 
             Thread.Sleep( 100 );
 
-            SetCursorPos( boardTopLeft.X + 20 + ( sol.ArrayPosition2.X * BoardPiece.Width ),
-                          boardTopLeft.Y + 20 + ( sol.ArrayPosition2.Y * BoardPiece.Height ) );
+            SetCursorPos(
+                this.board.ScreenTopLeft.X + 20 + (sol.ArrayPosition2.X*BoardPiece.Width),
+                this.board.ScreenTopLeft.Y + 20 + (sol.ArrayPosition2.Y*BoardPiece.Height));
 
             mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
             Thread.Sleep( 50 );
