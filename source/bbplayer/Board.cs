@@ -30,33 +30,28 @@ namespace bbplayer
 
         private void RecalculateBoardPieces()
         {
-            var tasks = new List<Task>();
+            object bitmapLocker = new object();
             object locker = new object();
 
-            for (int y = 0; y < 8; y++)
+            Parallel.For(0, 64, i =>
             {
-                for (int x = 0; x < 8; x++)
+                int x = i%8;
+                int y = i/8;
+
+                Bitmap bitmap;
+                lock (bitmapLocker)
                 {
-                    int y1 = y;
-                    int x1 = x;
-                    var bitmapClone = (Bitmap) this.boardImage.Clone();
-
-                    var task = Task.Factory.StartNew(() =>
-                    {
-                        var matches = BoardPiece.FindMatches(bitmapClone, x1, y1);                    
-                        var closestMatch = matches.GetClosestMatch().BoardPiece;
-
-                        lock (locker)
-                        {
-                            this.boardPositions[y1, x1].SetPiece(closestMatch, y1, x1);
-                        }
-                    });
-
-                    tasks.Add(task);
+                    bitmap = this.boardImage.Clone() as Bitmap;
                 }
-            }
+               
+                var matches = BoardPiece.FindMatches(bitmap, x, y);                    
+                var closestMatch = matches.GetClosestMatch().BoardPiece;
 
-            Task.WaitAll(tasks.ToArray());
+                lock (locker)
+                {
+                    this.boardPositions[y, x].SetPiece(closestMatch, y, x);
+                }
+            });
         }
 
         private int UpdateBoardFacades()

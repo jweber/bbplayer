@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -13,6 +14,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using AForge;
 using Brushes=System.Windows.Media.Brushes;
 using Color=System.Windows.Media.Color;
 using KeyEventArgs=System.Windows.Input.KeyEventArgs;
@@ -39,10 +41,10 @@ namespace bbplayer
         {
             InitializeComponent();
 
-            var timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds( 100 );
-            timer.Tick += CapturePixelColorUnderCursor;
-            timer.Start();
+//            var timer = new DispatcherTimer();
+//            timer.Interval = TimeSpan.FromMilliseconds( 100 );
+//            timer.Tick += CapturePixelColorUnderCursor;
+//            timer.Start();
 
             this.board = new Board();
             this.InitializeBoard();
@@ -266,7 +268,7 @@ namespace bbplayer
             var graphics = Graphics.FromImage(bitmap);
             graphics.CopyFromScreen(boardTopLeft, new Point(0, 0), size);
 
-            CleanBitmap(bitmap);
+           CleanBitmap(bitmap);
 
             var bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
                 bitmap.GetHbitmap(), 

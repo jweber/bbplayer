@@ -53,30 +53,21 @@ namespace bbplayer
 
         public Solution[] FindSolutions()
         {
-            //var solutions = new List<Solution>();
             var solutions = new ConcurrentBag<Solution>();
 
-            var tasks = new List<Task>();
-            for ( int y = 7; y >= 0; y-- )
+            Parallel.For(0, 64, i =>
             {
-                for ( int x = 0; x < 8; x++ )
-                {
-                    int y1 = y;
-                    int x1 = x;
-                    tasks.Add(Task.Run(() =>
-                    {
-                        var position = _board[y1, x1];
-                        MoveRightSolves(position).AddSolutions(solutions);
-                        MoveLeftSolves(position).AddSolutions(solutions);
-                        MoveUpSolves(position).AddSolutions(solutions);
-                        MoveDownSolves(position).AddSolutions(solutions);
-                    }));
-                }
-            }
+                int x = i%8;
+                int y = i/8;
 
-            Task.WaitAll(tasks.ToArray());
+                var position = _board[y, x];
+                MoveRightSolves(position).AddSolutions(solutions);
+                MoveLeftSolves(position).AddSolutions(solutions);
+                MoveUpSolves(position).AddSolutions(solutions);
+                MoveDownSolves(position).AddSolutions(solutions);
+            });
 
-            var orderedSolutions = solutions.OrderByDescending( s => s.Weight );
+            var orderedSolutions = solutions.OrderByDescending(s => s.Weight);
 
             return orderedSolutions.ToArray();
         }
