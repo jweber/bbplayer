@@ -24,34 +24,58 @@ namespace bbplayer
         public int UpdateBoardImage(Bitmap bitmap)
         {
             this.boardImage = bitmap;
-            return this.RecalculateBoardPieces();
+            this.RecalculateBoardPieces();
+            return this.UpdateBoardFacades();
         }
 
-        private int RecalculateBoardPieces()
+        private void RecalculateBoardPieces()
         {
-            int unknownCount = 0;
-
             var tasks = new List<Task>();
+            object locker = new object();
 
             for (int y = 0; y < 8; y++)
             {
                 for (int x = 0; x < 8; x++)
                 {
-                    int topLeftX = BoardPiece.Width*x;
-                    int topLeftY = BoardPiece.Height*y;
+                    int y1 = y;
+                    int x1 = x;
+                    var bitmapClone = (Bitmap) this.boardImage.Clone();
 
-                    var matches = BoardPiece.FindMatches(this.boardImage, x, y);
-                    
-                    var closestMatch = matches.GetClosestMatch().BoardPiece;
+                    var task = Task.Factory.StartNew(() =>
+                    {
+                        var matches = BoardPiece.FindMatches(bitmapClone, x1, y1);                    
+                        var closestMatch = matches.GetClosestMatch().BoardPiece;
 
-                    //_board[y, x].Facade.Fill = new SolidColorBrush(ConvertToMediaColor(averageColor));
-                    this.boardPositions[y, x].Facade.ToolTip = closestMatch.Name;
+                        lock (locker)
+                        {
+                            this.boardPositions[y1, x1].SetPiece(closestMatch, y1, x1);
+                        }
+                    });
 
-                    if (closestMatch.GetImage() != null)
-                        this.boardPositions[y, x].Facade.Fill = new ImageBrush(ImageUtility.BitmapToImageSource(closestMatch.GetImage(), ImageFormat.Bmp));
-                    
-                    
-                    if (closestMatch == BoardPiece.Unknown)
+                    tasks.Add(task);
+                }
+            }
+
+            Task.WaitAll(tasks.ToArray());
+        }
+
+        private int UpdateBoardFacades()
+        {
+            int unknownCount = 0;
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    var positionPiece = this.boardPositions[y, x].Piece;
+
+                    this.boardPositions[y, x].Facade.ToolTip = positionPiece.Name;
+
+                    if (positionPiece.GetImage() != null)
+                        this.boardPositions[y, x].Facade.Fill =
+                            new ImageBrush(ImageUtility.BitmapToImageSource(positionPiece.GetImage(), ImageFormat.Bmp));
+
+
+                    if (positionPiece == BoardPiece.Unknown)
                     {
                         unknownCount++;
 
@@ -63,8 +87,6 @@ namespace bbplayer
                         this.boardPositions[y, x].Facade.Stroke = System.Windows.Media.Brushes.Black;
                         this.boardPositions[y, x].Facade.StrokeThickness = 1;
                     }
-
-                    this.boardPositions[y, x].SetPiece(closestMatch, new Point(topLeftX, topLeftY), y, x);
                 }
             }
 

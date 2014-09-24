@@ -15,13 +15,11 @@ namespace bbplayer
 
         public Rectangle Facade { get; set; }
         public BoardPiece Piece { get; private set; }
-        public Point Position { get; private set; }
         public Point ArrayPosition { get; private set; }
 
-        public void SetPiece(BoardPiece piece, Point position, int arrayY, int arrayX)
+        public void SetPiece(BoardPiece piece, int arrayY, int arrayX)
         {
             Piece = piece;
-            Position = position;
             ArrayPosition = new Point(arrayX, arrayY);
         }
     }
