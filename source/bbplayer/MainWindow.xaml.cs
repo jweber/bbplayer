@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -29,9 +30,8 @@ namespace bbplayer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static Random random = new Random();
-
         private readonly Board board;
+        private int unknownPieceCount;
 
         //private Point boardTopLeft;
 
@@ -190,6 +190,8 @@ namespace bbplayer
             return new Point(topLeftX, topLeftY);
         }
 
+        private Solution previousSolution = null;
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if ( e.Key == Key.D1 )
@@ -203,12 +205,12 @@ namespace bbplayer
                 this.UpdateBoard();
 
                 var timer = new DispatcherTimer();
-                timer.Interval = TimeSpan.FromMilliseconds( 100 );
+                timer.Interval = TimeSpan.FromMilliseconds( 200 );
                 timer.Tick += delegate
                 {
                     this.UpdateBoard();
 
-                    var solution = this.FindSolution();
+                    var solution = this.FindSolution(this.previousSolution);
                     this.HighlightSolution(solution);
 
                 };
@@ -218,56 +220,42 @@ namespace bbplayer
             if ( e.Key == Key.D2 )
             {
                 this.UpdateBoard();
+
+                var solution = this.FindSolution(this.previousSolution);
+                this.ApplySolution(solution);
+
+                this.previousSolution = solution;
+
+                this.UpdateBoard();
+
+                Thread.Sleep(100);
+                SetForegroundWindow(new WindowInteropHelper(this).Handle);    
             }
 
             if ( e.Key == Key.D3 )
             {
-                var solution = this.FindSolution(chooseRandom: false);
-                this.ApplySolution(solution);
-            }
-
-            if ( e.Key == Key.D4 )
-            {
-                this.UpdateBoard();
-
-                int tryCounter = 0;
-                while (this.unknownCount > 0)
+                var sw = Stopwatch.StartNew();
+                while (sw.ElapsedMilliseconds < 1000*70 && this.unknownPieceCount < 25)
                 {
                     this.UpdateBoard();
-                    Thread.Sleep( 100 );
 
-                    if ((tryCounter++) > 10)
-                        break;
+                    int tryCounter = 0;
+                    while (this.unknownPieceCount > 3)
+                    {
+                        this.UpdateBoard();
+                        Thread.Sleep( 10 );
+
+                        if ((tryCounter++) > 20)
+                            break;
+                    }
+
+                    var solution = this.FindSolution(this.previousSolution);
+                    this.ApplySolution(solution);
+
+                    this.previousSolution = solution;
                 }
 
-                Thread.Sleep( 100 );
-                var solution = this.FindSolution(chooseRandom: false);
-                this.ApplySolution(solution);
-
-                Thread.Sleep( 250 );
-                this.UpdateBoard();
-            }
-            
-            if ( e.Key == Key.D5 )
-            {
-                this.UpdateBoard();
-
-                int tryCounter = 0;
-                while (this.unknownCount > 0)
-                {
-                    this.UpdateBoard();
-                    Thread.Sleep( 100 );
-
-                    if ((tryCounter++) > 10)
-                        break;
-                }
-
-                Thread.Sleep( 100 );
-                var solution = this.FindSolution(chooseRandom: true);
-                this.ApplySolution(solution);
-
-                Thread.Sleep( 250 );
-                this.UpdateBoard();
+                this.previousSolution = null;
             }
 
             if ( e.Key == Key.H )
@@ -333,12 +321,12 @@ namespace bbplayer
         private void UpdateBoard()
         {
             var bitmap = this.UpdateBoardImage(this.board.ScreenTopLeft);
-            this.unknownCount = this.board.UpdateBoardImage(bitmap);
+            this.unknownPieceCount = this.board.UpdateBoardImage(bitmap);
         }
 
-        private Solution FindSolution(bool chooseRandom = false)
+        private Solution FindSolution(Solution previousSolution)
         {
-            var solutions = this.board.FindSolutions();
+            var solutions = this.board.FindSolutions(previousSolution);
 
             if (solutions == null)
             {
@@ -346,17 +334,9 @@ namespace bbplayer
                 return null;
             }
 
-            Solution solution;
-
-            if (chooseRandom)
-            {
-                int randomSolution = random.Next(0, solutions.Length - 1);
-                solution = solutions[randomSolution];
-            }
-            else
-            {
-                solution = solutions.First();
-            }
+            Solution solution = solutions.FirstOrDefault();
+            if (solution == null)
+                return null;
 
             this.solutionDescription.Content = string.Format("Solution: (weight:{4}) x:{0}, y:{1} to x{2}, y:{3}",
                 solution.ArrayPosition1.X,
@@ -368,16 +348,19 @@ namespace bbplayer
             return solution;
         }
 
-        private void HighlightSolution(Solution sol)
+        private void HighlightSolution(Solution solution)
         {
+            if (solution == null)
+                return;
+
             rectSolutionSource.Visibility = Visibility.Visible;
             rectSolutionDest.Visibility = Visibility.Visible;
 
-            var sourceTopLeftY = Canvas.GetTop(this.imgBoardBitmap) + (sol.ArrayPosition1.Y*BoardPiece.Height);
-            var sourceTopLeftX = Canvas.GetLeft(this.imgBoardBitmap) + (sol.ArrayPosition1.X*BoardPiece.Width);
+            var sourceTopLeftY = Canvas.GetTop(this.imgBoardBitmap) + (solution.ArrayPosition1.Y*BoardPiece.Height);
+            var sourceTopLeftX = Canvas.GetLeft(this.imgBoardBitmap) + (solution.ArrayPosition1.X*BoardPiece.Width);
             
-            var destTopLeftY = Canvas.GetTop(this.imgBoardBitmap) + (sol.ArrayPosition2.Y*BoardPiece.Height);
-            var destTopLeftX = Canvas.GetLeft(this.imgBoardBitmap) + (sol.ArrayPosition2.X*BoardPiece.Width);
+            var destTopLeftY = Canvas.GetTop(this.imgBoardBitmap) + (solution.ArrayPosition2.Y*BoardPiece.Height);
+            var destTopLeftX = Canvas.GetLeft(this.imgBoardBitmap) + (solution.ArrayPosition2.X*BoardPiece.Width);
 
             Canvas.SetTop(rectSolutionSource, sourceTopLeftY);
             Canvas.SetLeft(rectSolutionSource, sourceTopLeftX);
@@ -386,30 +369,25 @@ namespace bbplayer
             Canvas.SetLeft(rectSolutionDest, destTopLeftX);
         }
 
-        private void ApplySolution( Solution sol )
+        private void ApplySolution(Solution solution)
         {
-            SetCursorPos(
-                this.board.ScreenTopLeft.X + 20 + (sol.ArrayPosition1.X*BoardPiece.Width),
-                this.board.ScreenTopLeft.Y + 20 + (sol.ArrayPosition1.Y*BoardPiece.Height));
+            if (solution == null)
+                return;
 
-            mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
-            Thread.Sleep( 50 );
-            mouse_event( (uint)MouseEventFlags.LEFTUP, 0, 0, 0, UIntPtr.Zero );
+            int cursorX = this.board.ScreenTopLeft.X + 20 + (solution.ArrayPosition1.X*BoardPiece.Width);
+            int cursorY = this.board.ScreenTopLeft.Y + 20 + (solution.ArrayPosition1.Y*BoardPiece.Height);
 
-            Thread.Sleep( 100 );
+            SetCursorPos(cursorX, cursorY);
+            mouse_event((uint) MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero);
 
-            SetCursorPos(
-                this.board.ScreenTopLeft.X + 20 + (sol.ArrayPosition2.X*BoardPiece.Width),
-                this.board.ScreenTopLeft.Y + 20 + (sol.ArrayPosition2.Y*BoardPiece.Height));
+            Thread.Sleep(75);
+           
+            cursorX = this.board.ScreenTopLeft.X + 20 + (solution.ArrayPosition2.X*BoardPiece.Width);
+            cursorY = this.board.ScreenTopLeft.Y + 20 + (solution.ArrayPosition2.Y*BoardPiece.Height);
 
-            mouse_event( (uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, UIntPtr.Zero );
-            Thread.Sleep( 50 );
-            mouse_event( (uint)MouseEventFlags.LEFTUP, 0, 0, 0, UIntPtr.Zero );
-
-            SetForegroundWindow(new WindowInteropHelper(this).Handle);       
-        }
-
-        private int unknownCount;
+            SetCursorPos(cursorX, cursorY);
+            mouse_event((uint) MouseEventFlags.LEFTUP, 0, 0, 0, UIntPtr.Zero);  
+        }      
 
 //        private void UseHypercube()
 //        {
@@ -583,13 +561,17 @@ namespace bbplayer
         private static extern int ReleaseCapture( IntPtr hWnd );
 
         [DllImport("user32.dll")]
-        static extern void mouse_event( uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo );
+        static extern void mouse_event( uint dwFlags, int dx, int dy, uint dwData, UIntPtr dwExtraInfo );
         
         [DllImport("user32.dll")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
+        private const int MOUSEEVENTF_LEFTDOWN = 0x02;
+        private const int MOUSEEVENTF_UP = 0x04;
+        private const int MOUSEEVENTF_ABS = 0x08;
+
         [Flags]
-        public enum MouseEventFlags
+        public enum MouseEventFlags : uint
         {
             LEFTDOWN = 0x00000002,
             LEFTUP = 0x00000004,
@@ -652,6 +634,9 @@ namespace bbplayer
 
         private void RectangleOnMouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (this.imgBoardBitmap.Source == null)
+                return;
+
             var rectangle = (System.Windows.Shapes.Rectangle) sender;
             var name = rectangle.Name;
             var rectangleX = Convert.ToInt32(name.Substring(2, 1)) - 1;
@@ -694,7 +679,7 @@ namespace bbplayer
         {
             var mp = (System.Windows.Controls.ListBox) sender;
             var item = (ListBoxMatch) mp.SelectedItem;
-            if (item == null || item.MatchPair.BoardPiece.Name == "Unknown")
+            if (item == null || this.imgBoardBitmap.Source == null || item.MatchPair.BoardPiece.Name == "Unknown")
                 return;
 
             rectSourcePiece.Fill = new ImageBrush(ImageUtility.BitmapToImageSource(item.MatchPair.BoardPiece.GetImage(), ImageFormat.Bmp));

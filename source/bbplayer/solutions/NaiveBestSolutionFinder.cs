@@ -48,7 +48,7 @@ namespace bbplayer.solutions
             this.board = board;
         }
 
-        public Solution[] FindSolutions()
+        public Solution[] FindSolutions(Solution previousSolution)
         {
             var solutions = new ConcurrentBag<Solution>();
 

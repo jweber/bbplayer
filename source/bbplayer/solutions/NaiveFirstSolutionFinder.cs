@@ -15,7 +15,7 @@ namespace bbplayer
             _board = board;
         }
 
-        public virtual Solution[] FindSolutions()
+        public virtual Solution[] FindSolutions(Solution previousSolution)
         {
             for (int y = 7; y >= 0; y--)
             {

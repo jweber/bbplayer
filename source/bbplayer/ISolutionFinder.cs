@@ -7,6 +7,6 @@ namespace bbplayer
 {
     interface ISolutionFinder
     {
-        Solution[] FindSolutions();
+        Solution[] FindSolutions(Solution previousSolution);
     }
 }

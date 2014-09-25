@@ -1,8 +1,10 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using Rectangle=System.Windows.Shapes.Rectangle;
 
 namespace bbplayer
 {
+    [DebuggerDisplay("{Piece} [{ArrayPosition.X}, {ArrayPosition.Y}]")]
     class BoardPosition
     {
         public BoardPosition()
@@ -15,7 +17,7 @@ namespace bbplayer
 
         public Rectangle Facade { get; set; }
         public BoardPiece Piece { get; private set; }
-        public Point ArrayPosition { get; private set; }
+        public Point ArrayPosition { get; set; }
 
         public void SetPiece(BoardPiece piece, int arrayY, int arrayX)
         {

@@ -76,7 +76,7 @@
         <Rectangle MouseUp="RectangleOnMouseUp" Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="162,222,0,0" x:Name="b86" Stroke="Black" VerticalAlignment="Top" Width="24" />
         <Rectangle MouseUp="RectangleOnMouseUp" Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="192,222,0,0" x:Name="b87" Stroke="Black" VerticalAlignment="Top" Width="24" />
         <Rectangle MouseUp="RectangleOnMouseUp" Fill="AliceBlue" Height="24" HorizontalAlignment="Left" Margin="222,222,0,0" x:Name="b88" Stroke="Black" VerticalAlignment="Top" Width="24" />
-        <Label HorizontalAlignment="Right" Margin="0,340,307,0" x:Name="solutionDescription" Width="209" Height="25" VerticalAlignment="Top"/>
+        <Label FontSize="10px" HorizontalAlignment="Right" Margin="0,340,72,0" x:Name="solutionDescription" Width="444" Height="33" VerticalAlignment="Top"/>
         <ListBox Margin="12,260,0,29" x:Name="listBox1" PreviewMouseUp="ListBox1_OnPreviewMouseUp" HorizontalAlignment="Left" Width="234">
             <ListBox.ItemTemplate>
                 <DataTemplate>

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Media;
 using bbplayer.solutions;
 using Brushes = System.Drawing.Brushes;
@@ -17,7 +19,8 @@ namespace bbplayer
         BoardPosition RightOf(BoardPosition position);
         BoardPosition BottomOf(BoardPosition position);
         BoardPosition LeftOf(BoardPosition position);
-        Solution[] FindSolutions();
+        Solution[] FindSolutions(Solution previousSolution);
+        void PerformMove(BoardPosition piece, MainWindow.Surround move);
        
         IVirtualBoard Clone();
     }
@@ -41,6 +44,40 @@ namespace bbplayer
             this.boardImage = bitmap;
             this.RecalculateBoardPieces();
             return this.UpdateBoardFacades();
+        }
+
+        public void PerformMove(BoardPosition piece, MainWindow.Surround move)
+        {
+            BoardPosition swappingPiece;
+            switch (move)
+            {
+                case MainWindow.Surround.Top:
+                    swappingPiece = this.TopOf(piece);
+                    break;
+                case MainWindow.Surround.Right:
+                    swappingPiece = this.RightOf(piece);
+                    break;
+                case MainWindow.Surround.Bottom:
+                    swappingPiece = this.BottomOf(piece);
+                    break;
+                case MainWindow.Surround.Left:
+                    swappingPiece = this.LeftOf(piece);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("move");
+            }
+
+            if (swappingPiece == null)
+                return;
+
+            var movePiecePosition = piece.ArrayPosition;
+            var swappingPosition = swappingPiece.ArrayPosition;
+
+            swappingPiece.ArrayPosition = movePiecePosition;
+            piece.ArrayPosition = swappingPosition;
+
+            this[swappingPiece.ArrayPosition.Y, swappingPiece.ArrayPosition.X] = swappingPiece;
+            this[piece.ArrayPosition.Y, piece.ArrayPosition.X] = piece;
         }
 
         public IVirtualBoard Clone()
@@ -162,10 +199,12 @@ namespace bbplayer
             return this[position.ArrayPosition.Y, position.ArrayPosition.X - 1];
         }
 
-        public Solution[] FindSolutions()
+        public Solution[] FindSolutions(Solution previousSolution)
         {
             var solutionFinder = new SolutionFinder(this);
-            var solutions = solutionFinder.FindSolutions();
+            var solutions = solutionFinder.FindSolutions(previousSolution);
+            if (solutions == null)
+                return new Solution[0];
 
             return solutions.ToArray();
         }
