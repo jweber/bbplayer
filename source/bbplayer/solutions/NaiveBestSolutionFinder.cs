@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace bbplayer
+namespace bbplayer.solutions
 {
    class SolutionPack
     {
-        public SolutionPack( Point initialPosition, Point moveToPosition )
-        {
-            Solution1 = new Solution( initialPosition, moveToPosition );
-            Solution2 = new Solution( initialPosition, moveToPosition );
-            Solution3 = new Solution( initialPosition, moveToPosition );
-            Solution4 = new Solution( initialPosition, moveToPosition );
-            Solution5 = new Solution( initialPosition, moveToPosition );
-            Solution6 = new Solution( initialPosition, moveToPosition );
-            Solution7 = new Solution( initialPosition, moveToPosition );
-        }
+       public SolutionPack(Point initialPosition, Point moveToPosition)
+       {
+           Solution1 = new Solution(initialPosition, moveToPosition);
+           Solution2 = new Solution(initialPosition, moveToPosition);
+           Solution3 = new Solution(initialPosition, moveToPosition);
+           Solution4 = new Solution(initialPosition, moveToPosition);
+           Solution5 = new Solution(initialPosition, moveToPosition);
+           Solution6 = new Solution(initialPosition, moveToPosition);
+           Solution7 = new Solution(initialPosition, moveToPosition);
+       }
 
         public Solution Solution1 { get; set; }
         public Solution Solution2 { get; set; }
@@ -32,23 +29,23 @@ namespace bbplayer
 
         public void AddSolutions( ConcurrentBag<Solution> solutions )
         {
-            solutions.Add( Solution1 );
-            solutions.Add( Solution2 );
-            solutions.Add( Solution3 );
-            solutions.Add( Solution4 );
-            solutions.Add( Solution5 );
-            solutions.Add( Solution6 );
-            solutions.Add( Solution7 );
+            solutions.Add(Solution1);
+            solutions.Add(Solution2);
+            solutions.Add(Solution3);
+            solutions.Add(Solution4);
+            solutions.Add(Solution5);
+            solutions.Add(Solution6);
+            solutions.Add(Solution7);
         }
     }
 
     class NaiveBestSolutionFinder : ISolutionFinder
     {
-        private Board _board;
+        private readonly Board board;
 
-        public NaiveBestSolutionFinder( Board board )
+        public NaiveBestSolutionFinder(Board board)
         {
-            _board = board;
+            this.board = board;
         }
 
         public Solution[] FindSolutions()
@@ -60,7 +57,7 @@ namespace bbplayer
                 int x = i%8;
                 int y = i/8;
 
-                var position = _board[y, x];
+                var position = board[y, x];
                 MoveRightSolves(position).AddSolutions(solutions);
                 MoveLeftSolves(position).AddSolutions(solutions);
                 MoveUpSolves(position).AddSolutions(solutions);
@@ -79,19 +76,19 @@ namespace bbplayer
 
             int hyperCubeWeight = ( position.Piece == BoardPiece.HyperCube ) ? (int) position.Piece.Weight : 0;
 
-            var firstRightOf = _board.RightOf( position );
+            var firstRightOf = board.RightOf( position );
             
             if ( firstRightOf == null || firstRightOf.Piece == position.Piece )
                 return solutions;
 
-            var secondRightOf = _board.RightOf( firstRightOf );
-            var thirdRightOf = _board.RightOf( secondRightOf );
+            var secondRightOf = board.RightOf( firstRightOf );
+            var thirdRightOf = board.RightOf( secondRightOf );
 
-            var firstNewTopOf = _board.TopOf( firstRightOf );
-            var secondNewTopOf = _board.TopOf( firstNewTopOf );
+            var firstNewTopOf = board.TopOf( firstRightOf );
+            var secondNewTopOf = board.TopOf( firstNewTopOf );
 
-            var firstNewBottomOf = _board.BottomOf( firstRightOf );
-            var secondNewBottomOf = _board.BottomOf( firstNewBottomOf );
+            var firstNewBottomOf = board.BottomOf( firstRightOf );
+            var secondNewBottomOf = board.BottomOf( firstNewBottomOf );
 
             bool alignsRight = ( secondRightOf != null && thirdRightOf != null )
                                && ( position.Piece == secondRightOf.Piece )
@@ -174,19 +171,19 @@ namespace bbplayer
 
             decimal hyperCubeWeight = ( position.Piece == BoardPiece.HyperCube ) ? position.Piece.Weight : 0;
 
-            var firstLeftOf = _board.LeftOf( position );
+            var firstLeftOf = board.LeftOf( position );
             
             if ( firstLeftOf == null || firstLeftOf.Piece == position.Piece )
                 return solutions;
 
-            var secondLeftOf = _board.LeftOf( firstLeftOf );
-            var thirdLeftOf = _board.LeftOf( secondLeftOf );
+            var secondLeftOf = board.LeftOf( firstLeftOf );
+            var thirdLeftOf = board.LeftOf( secondLeftOf );
 
-            var firstNewTopOf = _board.TopOf( firstLeftOf );
-            var secondNewTopOf = _board.TopOf( firstNewTopOf );
+            var firstNewTopOf = board.TopOf( firstLeftOf );
+            var secondNewTopOf = board.TopOf( firstNewTopOf );
 
-            var firstNewBottomOf = _board.BottomOf( firstLeftOf );
-            var secondNewBottomOf = _board.BottomOf( firstNewBottomOf );
+            var firstNewBottomOf = board.BottomOf( firstLeftOf );
+            var secondNewBottomOf = board.BottomOf( firstNewBottomOf );
 
             bool alignsLeft = ( secondLeftOf != null && thirdLeftOf != null )
                                && ( position.Piece == secondLeftOf.Piece )
@@ -269,19 +266,19 @@ namespace bbplayer
 
             decimal hyperCubeWeight = ( position.Piece == BoardPiece.HyperCube ) ? position.Piece.Weight : 0;
 
-            var firstTopOf = _board.TopOf( position );
+            var firstTopOf = board.TopOf( position );
 
             if ( firstTopOf == null || firstTopOf.Piece == position.Piece )
                 return solutions;
 
-            var secondTopOf = _board.TopOf( firstTopOf );
-            var thirdTopOf = _board.TopOf( secondTopOf );
+            var secondTopOf = board.TopOf( firstTopOf );
+            var thirdTopOf = board.TopOf( secondTopOf );
 
-            var firstNewLeftOf = _board.LeftOf( firstTopOf );
-            var secondNewLeftOf = _board.LeftOf( firstNewLeftOf );
+            var firstNewLeftOf = board.LeftOf( firstTopOf );
+            var secondNewLeftOf = board.LeftOf( firstNewLeftOf );
 
-            var firstNewRightOf = _board.RightOf( firstTopOf );
-            var secondNewRightOf = _board.RightOf( firstNewRightOf );
+            var firstNewRightOf = board.RightOf( firstTopOf );
+            var secondNewRightOf = board.RightOf( firstNewRightOf );
 
             bool alignsTop = ( secondTopOf != null && thirdTopOf != null )
                              && ( position.Piece == secondTopOf.Piece ) 
@@ -364,19 +361,19 @@ namespace bbplayer
 
             decimal hyperCubeWeight = ( position.Piece == BoardPiece.HyperCube ) ? position.Piece.Weight : 0;
 
-            var firstBottomOf = _board.BottomOf( position );
+            var firstBottomOf = board.BottomOf( position );
 
             if ( firstBottomOf == null || firstBottomOf.Piece == position.Piece )
                 return solutions;
 
-            var secondBottomOf = _board.BottomOf( firstBottomOf );
-            var thirdBottomOf = _board.BottomOf( secondBottomOf );
+            var secondBottomOf = board.BottomOf( firstBottomOf );
+            var thirdBottomOf = board.BottomOf( secondBottomOf );
 
-            var firstNewLeftOf = _board.LeftOf( firstBottomOf );
-            var secondNewLeftOf = _board.LeftOf( firstNewLeftOf );
+            var firstNewLeftOf = board.LeftOf( firstBottomOf );
+            var secondNewLeftOf = board.LeftOf( firstNewLeftOf );
 
-            var firstNewRightOf = _board.RightOf( firstBottomOf );
-            var secondNewRightOf = _board.RightOf( firstNewRightOf );
+            var firstNewRightOf = board.RightOf( firstBottomOf );
+            var secondNewRightOf = board.RightOf( firstNewRightOf );
 
             bool alignsBottom = ( secondBottomOf != null && thirdBottomOf != null )
                              && ( position.Piece == secondBottomOf.Piece ) 

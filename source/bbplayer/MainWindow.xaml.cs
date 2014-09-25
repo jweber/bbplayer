@@ -39,10 +39,10 @@ namespace bbplayer
         {
             InitializeComponent();
 
-            var timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds( 100 );
-            timer.Tick += CapturePixelColorUnderCursor;
-            timer.Start();
+//            var timer = new DispatcherTimer();
+//            timer.Interval = TimeSpan.FromMilliseconds( 100 );
+//            timer.Tick += CapturePixelColorUnderCursor;
+//            timer.Start();
 
             this.board = new Board();
             this.InitializeBoard();
@@ -458,7 +458,7 @@ namespace bbplayer
 //            ApplySolution( solution );
 //        }
 
-        enum Surround
+        public enum Surround
         {
             Top,
             Right,

@@ -7,7 +7,7 @@ namespace bbplayer
         public Solution()
         {}
 
-        public Solution( Point initialPosition, Point moveToPosition )
+        public Solution(Point initialPosition, Point moveToPosition)
         {
             ArrayPosition1 = initialPosition;
             ArrayPosition2 = moveToPosition;

@@ -130,6 +130,7 @@
     <Compile Include="BoardPiece.cs" />
     <Compile Include="solutions\Solution.cs" />
     <Compile Include="solutions\NaiveFirstSolutionFinder.cs" />
+    <Compile Include="solutions\SolutionFinder.cs" />
     <Compile Include="StringExtensions.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

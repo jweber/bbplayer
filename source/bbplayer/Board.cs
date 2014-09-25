@@ -4,12 +4,25 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using bbplayer.solutions;
 using Brushes = System.Drawing.Brushes;
 using Rectangle = System.Windows.Shapes.Rectangle;
 
 namespace bbplayer
 {
-    class Board
+    interface IVirtualBoard
+    {
+        BoardPosition this[int y, int x] { get; set; }
+        BoardPosition TopOf(BoardPosition position);
+        BoardPosition RightOf(BoardPosition position);
+        BoardPosition BottomOf(BoardPosition position);
+        BoardPosition LeftOf(BoardPosition position);
+        Solution[] FindSolutions();
+       
+        IVirtualBoard Clone();
+    }
+
+    class Board : IVirtualBoard
     {
         private readonly BoardPosition[,] boardPositions;
         private Bitmap boardImage;
@@ -28,6 +41,22 @@ namespace bbplayer
             this.boardImage = bitmap;
             this.RecalculateBoardPieces();
             return this.UpdateBoardFacades();
+        }
+
+        public IVirtualBoard Clone()
+        {
+            var newBoard = new Board();
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    var newBoardPosition = new BoardPosition();
+                    newBoardPosition.SetPiece(this[y, x].Piece, y, x);
+                    newBoard[y, x] = newBoardPosition;
+                }
+            }
+
+            return newBoard;
         }
 
         private void RecalculateBoardPieces()
@@ -135,7 +164,7 @@ namespace bbplayer
 
         public Solution[] FindSolutions()
         {
-            var solutionFinder = new NaiveBestSolutionFinder(this);
+            var solutionFinder = new SolutionFinder(this);
             var solutions = solutionFinder.FindSolutions();
 
             return solutions.ToArray();
