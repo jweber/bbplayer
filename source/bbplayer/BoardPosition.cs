@@ -1,10 +1,15 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using Rectangle=System.Windows.Shapes.Rectangle;
 
 namespace bbplayer
 {
+    [DebuggerDisplay("{Piece} [{ArrayPosition.X}, {ArrayPosition.Y}]")]
     class BoardPosition
     {
+        public BoardPosition()
+        {}
+
         public BoardPosition( Rectangle facade )
         {
             Facade = facade;
@@ -12,14 +17,12 @@ namespace bbplayer
 
         public Rectangle Facade { get; set; }
         public BoardPiece Piece { get; private set; }
-        public Point Position { get; private set; }
-        public Point ArrayPosition { get; private set; }
+        public Point ArrayPosition { get; set; }
 
-        public void SetPiece( BoardPiece piece, Point position, int arrayY, int arrayX )
+        public void SetPiece(BoardPiece piece, int arrayY, int arrayX)
         {
             Piece = piece;
-            Position = position;
-            ArrayPosition = new Point( arrayX, arrayY );
+            ArrayPosition = new Point(arrayX, arrayY);
         }
     }
 }
